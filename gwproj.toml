@@ -6,14 +6,16 @@ version = "B"
 cst = "src/main.cst"
 sdc = "src/main.sdc"
 verilog = [
-"src/hdmi/dvi_clock_driver.v",
-"src/hdmi/dvi_encoder.v",
-"src/hdmi/dvi_phy.v",
-"src/hdmi/dvi_top.v",
-"src/hdmi/hdmi_top.v",
-"src/hdmi/pll.v",
-"src/hdmi/test_pattern_gen.v",
-"src/hdmi/video_timing_ctrl.v",
+#"src/hdmi/dvi_clock_driver.v",
+#"src/hdmi/dvi_encoder.v",
+#"src/hdmi/dvi_phy.v",
+#"src/hdmi/dvi_top.v",
+#"src/hdmi/hdmi_top.v",
+#"src/hdmi/pll.v",
+#"src/hdmi/test_pattern_gen.v",
+#"src/hdmi/video_timing_ctrl.v",
+# "src/design.sv",
+#"src/dvi_tx/dvi_tx.vo"
 ]
 
 [options]
@@ -24,6 +26,6 @@ route_option = 1
 bit_compress = true
 cst_warn_to_error = true
 rpt_auto_place_io_info = true
-use_sspi_as_gpio = true
-use_mspi_as_gpio = true
-use_cpu_as_gpio = true
+# use_sspi_as_gpio = true
+# use_mspi_as_gpio = true
+# use_cpu_as_gpio = true

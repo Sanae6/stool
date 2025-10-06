@@ -1,8 +1,12 @@
 module top (
-  input wire in,
-  output wire out
 );
   assign out = in;
 
-  top t(.in(in), .out(out))
+	input sys_clk50,
+	input resetn,
+	
+	output       tmds_clk_n_0,
+	output       tmds_clk_p_0,
+	output [2:0] tmds_d_n_0,
+	output [2:0] tmds_d_p_0
 endmodule
