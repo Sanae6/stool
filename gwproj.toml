@@ -3,26 +3,28 @@ part = "GW5AST-LV138PG484AC1/I0"
 version = "B"
 
 [files]
-cst = "src/main.cst"
-sdc = "src/main.sdc"
+cst = "src/hdmi.cst"
+sdc = "src/hdmi.sdc"
 verilog = [
-#"src/hdmi/dvi_clock_driver.v",
-#"src/hdmi/dvi_encoder.v",
-#"src/hdmi/dvi_phy.v",
-#"src/hdmi/dvi_top.v",
-#"src/hdmi/hdmi_top.v",
-#"src/hdmi/pll.v",
-#"src/hdmi/test_pattern_gen.v",
-#"src/hdmi/video_timing_ctrl.v",
-# "src/design.sv",
-#"src/dvi_tx/dvi_tx.vo"
+"src/design.sv",
+"src/dvi-tx/dvi_tx_clk_drv.v",
+"src/dvi-tx/dvi_tx_tmds_enc.v",
+"src/dvi-tx/dvi_tx_tmds_phy.v",
+"src/dvi-tx/dvi_tx_top.v",
+# "src/gowin_pll_old/gowin_pll.v",
+"src/gowin_pll/gowin_pll.v",
+"src/gowin_pll/gowin_pll_mod.v",
+"src/pll_init.v",
+"src/top.v",
+"src/video-misc/test_pattern_gen.v",
+"src/video-misc/video_timing_ctrl.v"
 ]
 
 [options]
 verilog_std = "sysv2017"
 top_module = "top"
-place_option = 0
-route_option = 1
+place_option = 3
+route_option = 2
 bit_compress = true
 cst_warn_to_error = true
 rpt_auto_place_io_info = true

@@ -2,17 +2,17 @@
 
 module test_pattern_gen #(
 	
-	parameter video_hlength		= 2200,
-	parameter video_vlength		= 1125,
-	parameter video_hsync_pol	= 1,
-	parameter video_hsync_len	= 44,
-	parameter video_hbp_len		= 148,
+	parameter video_hlength		= 800,
+	parameter video_vlength		= 525,
+	parameter video_hsync_pol	= 0,
+	parameter video_hsync_len	= 96,
+	parameter video_hbp_len		= 48,
 	
-	parameter video_h_visible	= 1920,
-	parameter video_vsync_pol	= 1,
-	parameter video_vsync_len	= 5,
-	parameter video_vbp_len		= 36,
-	parameter video_v_visible	= 1080
+	parameter video_h_visible	= 640,
+	parameter video_vsync_pol	= 0,
+	parameter video_vsync_len	= 2,
+	parameter video_vbp_len		= 33,
+	parameter video_v_visible	= 480
 )
 (
 	input				pixel_clock,
@@ -55,8 +55,9 @@ module test_pattern_gen #(
 		pattern_colours_t[15] <= 24'h000000;
 	end
 	
-	assign pattern_index = pixel_x[7 +: 4];
+	assign pattern_index = (pixel_x * 16) / 640;
 	assign pattern_value = pattern_colours_t[pattern_index];
+	// assign pattern_value = 24'hff0000;
 	
 	assign video_pixel_even = (den_int) ? pattern_value : 24'h000000;
 	assign video_pixel_odd = (den_int) ? pattern_value : 24'h000000;
@@ -77,7 +78,6 @@ module test_pattern_gen #(
 		.video_vsync_len(video_vsync_len),
 		.video_vbp_len(video_vbp_len),
 		.video_v_visible(video_v_visible)
-		
 	)video_timing_ctrl_inst0(
 		
 		.pixel_clock		(pixel_clock),
