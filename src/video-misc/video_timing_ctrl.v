@@ -19,7 +19,7 @@ module video_timing_ctrl #(
 )
 (
 	input				pixel_clock,
-	input				reset,
+	input				rst,
 	input				ext_sync,
 	
 	output	[13 : 0]	timing_h_pos,
@@ -58,7 +58,7 @@ module video_timing_ctrl #(
 	
 	always@(posedge pixel_clock)begin
 		
-		if(reset)begin
+		if(rst)begin
 			
 			h_pos <= 0;
 			v_pos <= 0;

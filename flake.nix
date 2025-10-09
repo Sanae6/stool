@@ -42,6 +42,8 @@
             ])
             gnumake
             iverilog
+            verilator
+            veryl
             (python3.withPackages (p: [
               (p.callPackage ./cocotb.nix { })
               p.pytest

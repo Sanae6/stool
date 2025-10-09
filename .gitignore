@@ -4,3 +4,10 @@ results.xml
 .direnv/
 .gowin
 impl/
+dependencies/
+target/
+
+
+# Added by cargo
+
+/target

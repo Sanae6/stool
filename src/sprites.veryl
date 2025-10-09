@@ -1,0 +1,10 @@
+module sprites (
+  line_start: input logic,
+
+  x: input logic<14>,
+  y: input logic<14>,
+
+  
+){
+
+}

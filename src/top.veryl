@@ -1,0 +1,104 @@
+module top (
+  clk: input clock         ,
+  rst: input reset_sync_low,
+
+  tmds_clk_n_0: output logic   ,
+  tmds_clk_p_0: output logic   ,
+  tmds_d_n_0  : output logic<3>,
+  tmds_d_p_0  : output logic<3>,
+
+) {
+
+  var pll_lock:    logic;
+  var clk_p   : '_ clock;
+  var clk_p5  : '_ clock;
+  inst Gowin_PLL_inst: $sv::Gowin_PLL (
+    lock    : pll_lock,
+    clkout0 : clk_p   ,
+    clkout1 : clk_p5  ,
+    init_clk: clk     ,
+    clkin   : clk     ,
+  );
+
+  var resetn :    reset_sync_low        ;
+  let rst_ext: '_ default reset_sync_low = rst & pll_lock;
+  inst rsync: reset_sync (
+    clk            ,
+    rst   : rst_ext,
+    resetn         ,
+  );
+
+  var dvi_den  : logic    ;
+  var dvi_vsync: logic    ;
+  var dvi_hsync: logic    ;
+  var dvi_data : logic<24>;
+  inst dvi_top: $sv::dvi_tx_top (
+    pixel_clock  : clk_p  ,
+    ddr_bit_clock: clk_p5 ,
+    rst          : resetn,
+
+    den       : dvi_den  ,
+    hsync     : dvi_hsync,
+    vsync     : dvi_vsync,
+    pixel_data: dvi_data ,
+
+    tmds_clk: {tmds_clk_p_0, tmds_clk_n_0}  ,
+    tmds_d0 : {tmds_d_p_0[0], tmds_d_n_0[0]},
+    tmds_d1 : {tmds_d_p_0[1], tmds_d_n_0[1]},
+    tmds_d2 : {tmds_d_p_0[2], tmds_d_n_0[2]},
+  );
+
+inst m : me (x: pixel_x, y: pixel_y, data: dvi_data, );
+  // always_comb {
+  //   dvi_data = if pixel_x <: 50 && pixel_x >: 29 && pixel_y <: 50 && pixel_y >: 29
+  //     ? 24'hff00ff : 24'h00ffff;
+  // }
+  var pixel_x   : logic<14>;
+  var pixel_y   : logic<14>;
+  var line_start: logic    ;
+  inst vtc: $sv::video_timing_ctrl #(
+
+    video_hlength: 800,
+    video_vlength: 525,
+
+    video_hsync_pol: 0  ,
+    video_hsync_len: 96 ,
+    video_hbp_len  : 48 ,
+    video_h_visible: 640,
+
+    video_vsync_pol: 0  ,
+    video_vsync_len: 2  ,
+    video_vbp_len  : 33 ,
+    video_v_visible: 480,
+  ) (
+
+    pixel_clock: (clk_p),
+    rst        : resetn ,
+    ext_sync   : (1'b0) ,
+
+    pixel_x: pixel_x,
+    pixel_y: pixel_y,
+
+    video_vsync     : dvi_vsync ,
+    video_hsync     : dvi_hsync ,
+    video_den       : dvi_den   ,
+    video_line_start: line_start,
+  );
+}
+
+module reset_sync (
+  clk: input clock         ,
+  rst: input reset_sync_low,
+
+  resetn: output reset_sync_low,
+) {
+  var count: logic<4>;
+  always_ff (clk, rst) {
+    if_reset {
+      count = 0;
+    } else {
+      count += &count;
+    }
+  }
+  assign resetn = &count;
+}

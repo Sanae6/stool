@@ -22,8 +22,8 @@ module test_pattern_gen #(
 	output				video_hsync,
 	output				video_den,
 	output				video_line_start,
-	output	[23 : 0]	video_pixel_even,
-	output	[23 : 0]	video_pixel_odd
+	output	[23 : 0]	video_pixel_even
+	// output	[23 : 0]	video_pixel_odd
 );
 	
 	wire	[3 : 0]		pattern_index;
@@ -60,7 +60,7 @@ module test_pattern_gen #(
 	// assign pattern_value = 24'hff0000;
 	
 	assign video_pixel_even = (den_int) ? pattern_value : 24'h000000;
-	assign video_pixel_odd = (den_int) ? pattern_value : 24'h000000;
+	// assign video_pixel_odd = (den_int) ? pattern_value : 24'h000000;
 	
 	assign video_den = den_int;
 	
@@ -81,7 +81,7 @@ module test_pattern_gen #(
 	)video_timing_ctrl_inst0(
 		
 		.pixel_clock		(pixel_clock),
-		.reset				(reset),
+		.rst				(reset),
 		.ext_sync			(1'b0),
 		
 		.timing_h_pos		(),

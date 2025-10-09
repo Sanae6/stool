@@ -15,14 +15,16 @@ verilog = [
 "src/gowin_pll/gowin_pll.v",
 "src/gowin_pll/gowin_pll_mod.v",
 "src/pll_init.v",
-"src/top.v",
-"src/video-misc/test_pattern_gen.v",
+# "src/top.v",
+# "src/video-misc/test_pattern_gen.v",
+"target/src/top.sv",
+"target/src/me.sv",
 "src/video-misc/video_timing_ctrl.v"
 ]
 
 [options]
 verilog_std = "sysv2017"
-top_module = "top"
+top_module = "ctech_top"
 place_option = 3
 route_option = 2
 bit_compress = true

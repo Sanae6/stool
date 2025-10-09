@@ -1,0 +1,9 @@
+[project]
+name = "ctech"
+version = "0.1.0"
+
+[build]
+target = {type = "directory", path = "target"}
+
+[format]
+indent_width = 2

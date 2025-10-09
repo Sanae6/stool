@@ -40,7 +40,7 @@ module top(
 		
 		.pixel_clock		(clk_p),
 		.ddr_bit_clock		(clk_p5),
-		.reset				(~sys_resetn),
+		.rst				(~sys_resetn),
 		
 		.den				(dvi_den),
 		.hsync				(dvi_hsync),
@@ -56,7 +56,7 @@ module top(
 	test_pattern_gen test_gen0(
 		
 		.pixel_clock		(clk_p),
-		.reset				(~sys_resetn),
+		.rst				(~sys_resetn),
 		
 		.video_vsync		(dvi_vsync),
 		.video_hsync		(dvi_hsync),

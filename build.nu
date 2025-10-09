@@ -1,4 +1,5 @@
 def main [] {
+  veryl build
   let project = open gwproj.toml
   let dev = $project.device;
   let files = $project.files | items {|k, v|
