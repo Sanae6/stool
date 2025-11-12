@@ -6,4 +6,6 @@ edition = "2024"
 [dependencies]
 
 [dev-dependencies]
+embedded-time = "0.12.1"
 image = "0.25.8"
+midly = "0.5.3"

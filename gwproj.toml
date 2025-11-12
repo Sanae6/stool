@@ -18,7 +18,10 @@ verilog = [
 # "src/top.v",
 # "src/video-misc/test_pattern_gen.v",
 "target/src/top.sv",
-"target/src/me.sv",
+# "target/src/me.sv",
+"src/arduino/ai_sync.v",
+"target/src/arduino/arduino.sv",
+"target/src/arduino/receiver.sv",
 "src/video-misc/video_timing_ctrl.v"
 ]
 

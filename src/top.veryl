@@ -2,11 +2,17 @@ module top (
   clk: input clock         ,
   rst: input reset_sync_low,
 
+  // awesome_pin: output logic,
+
   tmds_clk_n_0: output logic   ,
   tmds_clk_p_0: output logic   ,
   tmds_d_n_0  : output logic<3>,
   tmds_d_p_0  : output logic<3>,
 
+  ar_sck : input  'ar clock_negedge ,
+  ar_rst : input  'ar logic,
+  ar_copi: input  'ar logic         ,
+  // ar_cipo: output 'ar logic         ,
 ) {
 
   var pll_lock:    logic;
@@ -33,8 +39,8 @@ module top (
   var dvi_hsync: logic    ;
   var dvi_data : logic<24>;
   inst dvi_top: $sv::dvi_tx_top (
-    pixel_clock  : clk_p  ,
-    ddr_bit_clock: clk_p5 ,
+    pixel_clock  : clk_p ,
+    ddr_bit_clock: clk_p5,
     rst          : resetn,
 
     den       : dvi_den  ,
@@ -48,11 +54,29 @@ module top (
     tmds_d2 : {tmds_d_p_0[2], tmds_d_n_0[2]},
   );
 
-inst m : me (x: pixel_x, y: pixel_y, data: dvi_data, );
-  // always_comb {
-  //   dvi_data = if pixel_x <: 50 && pixel_x >: 29 && pixel_y <: 50 && pixel_y >: 29
-  //     ? 24'hff00ff : 24'h00ffff;
-  // }
+  // inst m : me (x: pixel_x, y: pixel_y, data: dvi_data, );
+  var off_color: '_ logic<24>;
+  inst a: arduino_comms (
+    clk               ,
+    rst               ,
+    ar_sck : ar_sck  ,
+    ar_rst : ar_rst  ,
+    ar_copi: ~ar_copi ,
+    // ar_cipo           ,
+    color  : off_color,
+  );
+
+  // let piss: 'ar logic<3> = {ar_sck, ar_rst, ar_copi};
+  unsafe (cdc) {
+    always_comb {
+      dvi_data = switch {
+        pixel_x <: 150: if ~ar_sck ? 24'hff0000 : 24'h220000,
+        pixel_x <: 300: if ar_rst ? 24'h00ff00 : 24'h002200,
+        pixel_x <: 450: if ~ar_copi ? 24'h0000ff : 24'h000022,
+        default       : off_color
+      };
+    }
+  }
   var pixel_x   : logic<14>;
   var pixel_y   : logic<14>;
   var line_start: logic    ;

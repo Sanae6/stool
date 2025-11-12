@@ -4,6 +4,8 @@ version = "0.1.0"
 
 [build]
 target = {type = "directory", path = "target"}
+clock_type = "posedge"
+reset_type = "sync_low"
 
 [format]
 indent_width = 2

@@ -1,0 +1,90 @@
+// https://github.com/Kenta11/simple_uart_veryl/blob/main/src/receiver_axis.veryl
+
+module receiver_axis #(
+  param CLOCK_FREQUENCY: u32 = 100_000_000,
+  param BAUD_RATE      : u32 = 115200     ,
+  param WORD_WIDTH     : u32 = 8          ,
+) (
+  clk             : input  clock            ,
+  rst             : input  reset            ,
+  din             : input  logic            ,
+  dout_axis_tdata : output logic<WORD_WIDTH>,
+  dout_axis_tready: input  logic            ,
+  dout_axis_tvalid: output logic            ,
+) {
+  // constants
+  const CLOCKS_PER_BIT: u32 = CLOCK_FREQUENCY / BAUD_RATE;
+
+  // type definition
+  enum state_t: logic<2> {
+    WAIT,
+    RECEIVE_BITS,
+    WRITE_WORD,
+  }
+
+  // registers and wires
+  var state            : state_t                ;
+  var data             : logic  <WORD_WIDTH + 2>;
+  var clock_counts     : u32                    ;
+  var half_clock_counts: bool                   ;
+  var full_clock_counts: bool                   ;
+
+  // logics
+  assign dout_axis_tdata  = data[WORD_WIDTH:1];
+  assign dout_axis_tvalid = (state == state_t::WRITE_WORD);
+
+  always_ff {
+    if_reset {
+      state = state_t::WAIT;
+    } else {
+      case state {
+        state_t::WAIT        : state = if ~din ? state_t::RECEIVE_BITS : state;
+        state_t::RECEIVE_BITS: {
+          if full_clock_counts {
+            if ~data[0] {
+              state = if data[WORD_WIDTH + 1] ? state_t::WRITE_WORD : state_t::WAIT;
+            } else {
+              state = if data == '{1 repeat (WORD_WIDTH + 2)} ? state_t::WAIT : state;
+            }
+          } else {
+            state = state;
+          }
+        }
+        state_t::WRITE_WORD: {
+          if (dout_axis_tready) {
+            state = state_t::WAIT;
+          } else {
+            state = state;
+          }
+        }
+        default: state = state;
+      }
+    }
+  }
+
+  always_ff {
+    if_reset {
+      data = {1'b1 repeat (WORD_WIDTH + 2)};
+    } else {
+      case state {
+        state_t::RECEIVE_BITS: data = if half_clock_counts ? {din, data[WORD_WIDTH + 1:1]} : data;
+        state_t::WRITE_WORD  : data = data;
+        default              : data = {1 repeat (WORD_WIDTH + 2)};
+      }
+    }
+  }
+
+  always_ff {
+    if_reset {
+      clock_counts = 0;
+    } else {
+      case state {
+        state_t::RECEIVE_BITS: clock_counts = if full_clock_counts ? 0 : clock_counts + 1;
+        default              : clock_counts = 0;
+      }
+    }
+  }
+
+  assign half_clock_counts = (clock_counts == (CLOCKS_PER_BIT / 2));
+  assign full_clock_counts = (clock_counts == (CLOCKS_PER_BIT - 1));
+}

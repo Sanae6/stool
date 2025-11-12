@@ -1,4 +1,5 @@
 module sprites (
+  clk: input clock,
   line_start: input logic,
 
   x: input logic<14>,
