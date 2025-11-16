@@ -6,7 +6,7 @@ results.xml
 impl/
 dependencies/
 target/
-
+rv/output.*
 
 # Added by cargo
 

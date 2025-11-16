@@ -19,10 +19,16 @@ verilog = [
 # "src/video-misc/test_pattern_gen.v",
 "target/src/top.sv",
 # "target/src/me.sv",
-"src/arduino/ai_sync.v",
+# "src/arduino/ai_sync.v",
 "target/src/arduino/arduino.sv",
 "target/src/arduino/receiver.sv",
-"src/video-misc/video_timing_ctrl.v"
+"src/video-misc/video_timing_ctrl.v",
+
+"src/actual/picorv32.sv",
+"target/src/actual/actual_top.sv",
+"target/src/actual/graphics.sv",
+"target/src/actual/transmit.sv",
+"src/actual/code_memory.sv"
 ]
 
 [options]
@@ -33,6 +39,6 @@ route_option = 2
 bit_compress = true
 cst_warn_to_error = true
 rpt_auto_place_io_info = true
-# use_sspi_as_gpio = true
+use_sspi_as_gpio = true
 # use_mspi_as_gpio = true
-# use_cpu_as_gpio = true
+use_cpu_as_gpio = true

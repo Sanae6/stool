@@ -32,7 +32,7 @@
         formatter = nixfmt-tree;
         inherit inputs;
         packages.default = pkgs.callPackage ./package.nix { };
-        devShells.default = mkShellNoCC {
+        devShells.default = mkShell {
           buildInputs = [
             llvmPackages.clang-unwrapped
             llvmPackages.bintools-unwrapped
@@ -48,6 +48,7 @@
               (p.callPackage ./cocotb.nix { })
               p.pytest
             ]))
+            minicom
           ];
           LD_LIBRARY_PATH = lib.makeLibraryPath (gowin-eda.gowinPackages pkgs);
         };

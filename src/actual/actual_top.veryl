@@ -1,0 +1,245 @@
+embed (inline) sv{{{
+`timescale 1 ns / 1 ns
+}}}
+
+module actual_top (
+  clk  : input    clock          ,
+  clk_p: input '_ clock          ,
+  rst  : input    reset_async_low,
+
+  vsync: input  logic    ,
+  hsync: input  logic    ,
+  hpos : input  logic<14>,
+  vpos : input  logic<14>,
+  pixel: output logic<24>,
+
+  uart_tx: output logic   ,
+  led    : output logic<8>,
+) {
+  /*
+  let array  : logic<10> [15] = '{8'h68, 8'h65, 8'h6C, 8'h6C, 8'h6F, 8'h20, 8'h77, 8'h6F, 8'h72, 8'h6C, 8'h64, 8'h20, 8'h3A, 8'h33, 8'h0A};
+  var index  : logic<4>      ;
+  var stopped: logic         ;
+  var tick   : logic         ;
+  inst tx: transmitter (
+    clk                    ,
+    rst      : rst         ,
+    has_value: true        ,
+    value    : array[index],
+    stopped                ,
+    tick                   ,
+    uart_tx                ,
+  );
+
+  always_ff {
+    if_reset {
+      index = 0;
+    } else if tick && stopped {
+      index = (index + 1) % 15;
+    } else {
+      index = index;
+    }
+  }
+  */
+
+  // inst gfx: sprite_graphics (
+  //   clk    ,
+  //   vsync  ,
+  //   hsync  ,
+  //   x      ,
+  //   y      ,
+  //   pixel  ,
+  // );
+
+  var code_mem_value: logic<32>;
+  inst code_mem: $sv::code_memory (
+    address: mem_addr[0+:12],
+    value  : code_mem_value ,
+  );
+
+  var eoi         : logic<32>;
+  var irq         : logic<32>;
+  var pending_irqs: logic<32>;
+  var is_vsync    : logic    ;
+  var was_vsync   : logic    ;
+
+  always_ff (clk_p) {
+    if_reset {
+      is_vsync = false;
+    } else {
+      is_vsync = hpos == 50 && vpos == 50;
+    }
+  }
+
+  always_ff (clk) {
+    if_reset {
+      irq          = 0;
+      pending_irqs = 0;
+      was_vsync    = false;
+    } else {
+      let rising_vsync: logic = is_vsync && !was_vsync;
+      was_vsync    = is_vsync;
+      let temp        : logic<32> = {28'0, vsync, 3'0};
+      pending_irqs = (pending_irqs & ~eoi) | temp;
+      irq          = pending_irqs;
+    }
+  }
+
+  var trap     : logic          ;
+  var memory   : logic<32> [256];
+  var mem_valid: logic          ;
+  var mem_instr: logic          ;
+  var mem_ready: logic          ;
+  var mem_addr : logic<32>      ;
+  var mem_wdata: logic<32>      ;
+  var mem_wstrb: logic<4>       ;
+  var mem_rdata: logic<32>      ;
+  var led_state: logic<8>       ;
+
+  inst pico: $sv::picorv32 #(
+    ENABLE_IRQ: 1,
+  ) (
+    clk        ,
+    resetn: rst,
+    trap       ,
+
+    mem_valid  ,
+    mem_instr  ,
+    mem_ready  ,
+
+    mem_addr   ,
+    mem_wdata  ,
+    mem_wstrb  ,
+    mem_rdata  ,
+
+    mem_la_read : _,
+    mem_la_write: _,
+    mem_la_addr : _,
+    mem_la_wdata: _,
+    mem_la_wstrb: _,
+
+    pcpi_valid: _    ,
+    pcpi_insn : _    ,
+    pcpi_rs1  : _    ,
+    pcpi_rs2  : _    ,
+    pcpi_wr   : false,
+    pcpi_rd   : 0    ,
+    pcpi_wait : false,
+    pcpi_ready: false,
+
+    irq  ,
+    eoi  ,
+
+    trace_valid: _,
+    trace_data : _,
+  );
+
+  always_ff (clk) {
+    if_reset {
+      memory    = '{0 repeat 256};
+      mem_rdata = 0;
+      led_state = 8'0;
+      mem_ready = false;
+    } else {
+      memory    = memory;
+      var new_state: logic<8>;
+      new_state = led_state;
+      if trap {
+        // done!
+      } else if !mem_valid {
+        // do literally nothing
+        $display ("memory not valid!");
+        mem_ready = false;
+      } else if mem_instr {
+        mem_rdata = code_mem_value;
+        mem_ready = true;
+        $display ("instr fetch");
+      } else if mem_wstrb == 0 {
+        let value: logic<32> = case mem_addr[12+:4] {
+          0      : code_mem_value,
+          1      : {24'0, led},
+          2      : memory[mem_addr[2+:8]],
+          default: 'hffffffff,
+        };
+        mem_rdata = value;
+        $display ("got read", mem_addr[12+:4], mem_addr[0+:12], mem_rdata, code_mem_value, value);
+        mem_ready = true;
+      } else if mem_wstrb != 0 {
+        let device   : logic<4>  = mem_addr[12+:4];
+        let word_addr: logic<8>  = mem_addr[2+:8];
+        let word_mask: logic<32> = {
+          mem_wstrb[3] repeat 8,
+          mem_wstrb[2] repeat 8,
+          mem_wstrb[1] repeat 8,
+          mem_wstrb[0] repeat 8,
+        };
+
+        $display("got write %x %x %x %x", mem_addr[12+:4], mem_addr[9:0], mem_wdata, word_mask);
+
+        mem_ready = true;
+        case device {
+          2: {
+            memory[word_addr] = (memory[word_addr] & ~word_mask) | (mem_wdata & word_mask);
+          }
+          1: new_state = mem_wdata[0+:8];
+        }
+      }
+      led_state = new_state;
+    }
+  }
+
+  always_comb {
+    pixel = {led_state, 16'0};
+  }
+}
+
+#[test(test1)]
+embed (inline) sv{{{
+
+  module test1dut;
+    var logic clk;
+    var logic clk_p;
+    var logic rst;
+
+    var logic [7:0] led;
+    var logic vsync;
+    var logic [13:0] hpos, vpos;
+
+    ctech_actual_top top (
+      .clk(clk),
+      .clk_p(clk_p),
+      .rst(rst),
+      .vsync(vsync),
+      .hsync(0),
+      .hpos(hpos),
+      .vpos(vpos),
+      .pixel(),
+      .uart_tx(),
+      .led(led)
+    );
+    
+    always #1 clk = ~clk;
+    always #7 clk_p = ~clk_p;
+    initial begin
+      rst = 1;
+      #1 rst = 0;
+      #1 rst = 1;
+      #1024 $finish;
+    end
+    always begin
+      #2
+      $display("%t pc %x led %b  x1 %x x2 %x x3 %x  irq %x %x %x"
+        , $realtime, top.pico.reg_pc, top.led_state
+        , top.pico.cpuregs[1], top.pico.cpuregs[2], top.pico.cpuregs[3]
+        , top.irq[0+:4], top.eoi[0+:4], top.pico.irq_mask[0+:4]);
+      if (top.trap) begin
+        $display("trapped!");
+        $finish;
+      end
+    end
+    always begin 
+      #60 hpos = 50; vpos = 50;
+      #2 vpos = 0;
+    end
+  endmodule
+}}}

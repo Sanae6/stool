@@ -1,0 +1,78 @@
+module transmitter (
+  clk      : input  clock   ,
+  rst      : input  reset   ,
+  has_value: input  logic   ,
+  value    : input  logic<8>,
+  stopped  : output logic   ,
+  tick     : output logic   ,
+  uart_tx  : output logic   ,
+) {
+  var counter: logic<32>;
+  var index  : logic<4> ;
+
+  enum state_t: logic<2> {
+    IDLE,
+    START,
+    DATA,
+    STOP,
+  }
+  var state: state_t;
+
+  always_ff (clk) {
+    stopped = state == state_t::STOP;
+  }
+
+  always_ff (clk) {
+    if_reset {
+      counter = 0;
+      tick    = 0;
+    } else if counter == 126_000_000 / 9600 {
+      counter = 0;
+      tick    = 1;
+    } else {
+      counter += 1;
+      tick    =  0;
+    }
+  }
+
+  always_ff (clk) {
+    if_reset {
+      state = state_t::IDLE;
+    } else if (counter == 0) {
+      case state {
+        state_t::IDLE : state = if has_value ? state_t::START : state_t::IDLE;
+        state_t::START: state = state_t::DATA;
+        state_t::DATA : state = if index == 7 ? state_t::STOP : state_t::DATA;
+        state_t::STOP : state = state_t::IDLE;
+      }
+    } else {
+      state = state;
+    }
+  }
+
+  always_ff (clk) {
+    if_reset {
+      uart_tx = 1;
+    } else {
+      case state {
+        state_t::IDLE : uart_tx = 1;
+        state_t::START: uart_tx = 0;
+        state_t::DATA : uart_tx = value[index];
+        state_t::STOP : uart_tx = 1;
+      }
+    }
+  }
+
+  always_ff (clk) {
+    if_reset {
+      index = 0;
+    } else if (counter == 0) {
+      index = case state {
+        state_t::DATA: if index == 7 ? 0 : index + 1,
+        default      : 0,
+      };
+    } else {
+      index = index;
+    }
+  }
+}

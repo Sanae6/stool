@@ -1,4 +1,10 @@
+def "main test" [] {
+  nu rv/compile.nu
+  veryl test --verbose src/actual/actual_top.veryl src/actual/graphics.veryl
+}
+
 def main [] {
+  nu rv/compile.nu
   veryl build
   let project = open gwproj.toml
   let dev = $project.device;

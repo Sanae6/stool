@@ -3,9 +3,19 @@ name = "ctech"
 version = "0.1.0"
 
 [build]
-target = {type = "directory", path = "target"}
+target = { type = "directory", path = "target" }
 clock_type = "posedge"
-reset_type = "sync_low"
+reset_type = "async_low"
 
 [format]
 indent_width = 2
+
+[test]
+include_files = [
+"src/actual/picorv32.sv",
+"src/actual/code_memory.sv",
+"src/actual/code_memory.gen.sv",
+]
+
+[test.verilator]
+compile_args = ["-I../src/actual/"]

@@ -1,0 +1,17 @@
+embed (inline) sv{{{
+`timescale 1 ns / 1 ns
+}}}
+
+module sprite_graphics (
+  clk  : input clock    ,
+  vsync: input logic    ,
+  hsync: input logic    ,
+  hpos : input logic<14>,
+  vpos : input logic<14>,
+
+  pixel: output logic<24>,
+) {
+  always_ff {
+    pixel = 24'h6495ED;
+  }
+}

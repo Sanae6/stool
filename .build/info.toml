@@ -3,280 +3,312 @@
 veryl_version = "0.16.4"
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/ctech.f"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 853154322
+secs_since_epoch = 1763273858
+nanos_since_epoch = 151816534
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/async_fifo/async_fifo.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819170718
+secs_since_epoch = 1763273858
+nanos_since_epoch = 119867958
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/async_fifo/async_fifo.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819221913
+secs_since_epoch = 1763273858
+nanos_since_epoch = 119912983
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/async_fifo/async_fifo_pkg.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819308545
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120010285
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/async_fifo/async_fifo_pkg.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819318624
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120022177
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/async_fifo/async_fifo_reset_sync.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819356154
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120061231
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/async_fifo/async_fifo_reset_sync.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819371162
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120076680
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/async_handshake/async_handshake.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819457463
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120164554
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/async_handshake/async_handshake.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819489443
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120196534
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/axi_if/axi_if.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819629114
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120333391
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/axi_if/axi_if.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819637620
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120341977
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/axi_if/axi_pkg.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 820240576
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120931904
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/axi_if/axi_pkg.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 820263098
+secs_since_epoch = 1763273858
+nanos_since_epoch = 120967160
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/binary_enc_dec/binary_decoder.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 821027737
+secs_since_epoch = 1763273858
+nanos_since_epoch = 121766549
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/binary_enc_dec/binary_decoder.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 821047313
+secs_since_epoch = 1763273858
+nanos_since_epoch = 121785595
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/binary_enc_dec/binary_encoder.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 822066137
+secs_since_epoch = 1763273858
+nanos_since_epoch = 122791802
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/binary_enc_dec/binary_encoder.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 822089851
+secs_since_epoch = 1763273858
+nanos_since_epoch = 122814795
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/coding/linear_sec_decoder.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 822861713
+secs_since_epoch = 1763273858
+nanos_since_epoch = 123673025
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/coding/linear_sec_decoder.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 822882562
+secs_since_epoch = 1763273858
+nanos_since_epoch = 123694035
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/coding/linear_sec_encoder.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 823687125
+secs_since_epoch = 1763273858
+nanos_since_epoch = 124442739
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/coding/linear_sec_encoder.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 823711971
+secs_since_epoch = 1763273858
+nanos_since_epoch = 124462997
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/coding/test_linear_sec.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 823733872
+secs_since_epoch = 1763273858
+nanos_since_epoch = 124485549
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/coding/test_linear_sec.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 823744061
+secs_since_epoch = 1763273858
+nanos_since_epoch = 124495859
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/counter/counter.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 825102098
+secs_since_epoch = 1763273858
+nanos_since_epoch = 125848245
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/counter/counter.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 825125502
+secs_since_epoch = 1763273858
+nanos_since_epoch = 125872781
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/countones/countones.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 825972344
+secs_since_epoch = 1763273858
+nanos_since_epoch = 126675066
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/countones/countones.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 825992361
+secs_since_epoch = 1763273858
+nanos_since_epoch = 126695344
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/countones/onehot.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 826815349
+secs_since_epoch = 1763273858
+nanos_since_epoch = 127469406
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/countones/onehot.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 826837460
+secs_since_epoch = 1763273858
+nanos_since_epoch = 127489554
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/delay/delay.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 827320472
+secs_since_epoch = 1763273858
+nanos_since_epoch = 127902679
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/delay/delay.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 827337514
+secs_since_epoch = 1763273858
+nanos_since_epoch = 127918649
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/edge_detector/edge_detector.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 828234981
+secs_since_epoch = 1763273858
+nanos_since_epoch = 128396876
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/edge_detector/edge_detector.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 828280045
+secs_since_epoch = 1763273858
+nanos_since_epoch = 128414789
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/fifo/fifo.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 830867158
+secs_since_epoch = 1763273858
+nanos_since_epoch = 129981598
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/fifo/fifo.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 830898997
+secs_since_epoch = 1763273858
+nanos_since_epoch = 130008909
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/fifo/fifo_controller.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 837182535
+secs_since_epoch = 1763273858
+nanos_since_epoch = 135664628
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/fifo/fifo_controller.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 837248328
+secs_since_epoch = 1763273858
+nanos_since_epoch = 135716766
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/gray/gray_counter.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 838059764
+secs_since_epoch = 1763273858
+nanos_since_epoch = 136409024
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/gray/gray_counter.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 838078549
+secs_since_epoch = 1763273858
+nanos_since_epoch = 136426487
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/gray/gray_decoder.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 838756456
+secs_since_epoch = 1763273858
+nanos_since_epoch = 137036010
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/gray/gray_decoder.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 838775070
+secs_since_epoch = 1763273858
+nanos_since_epoch = 137052992
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/gray/gray_encoder.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 838917236
+secs_since_epoch = 1763273858
+nanos_since_epoch = 137178187
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/gray/gray_encoder.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 838930841
+secs_since_epoch = 1763273858
+nanos_since_epoch = 137191061
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/lfsr/lfsr_galois.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 841115913
+secs_since_epoch = 1763273858
+nanos_since_epoch = 139332848
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/lfsr/lfsr_galois.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 841147522
+secs_since_epoch = 1763273858
+nanos_since_epoch = 139364357
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/pkg/types.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 841363346
+secs_since_epoch = 1763273858
+nanos_since_epoch = 139560936
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/pkg/types.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 841380317
+secs_since_epoch = 1763273858
+nanos_since_epoch = 139578028
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/ram/ram.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 842644689
+secs_since_epoch = 1763273858
+nanos_since_epoch = 140783619
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/ram/ram.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 842666320
+secs_since_epoch = 1763273858
+nanos_since_epoch = 140804178
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/selector/demux.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 843273123
+secs_since_epoch = 1763273858
+nanos_since_epoch = 141398843
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/selector/demux.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 843289143
+secs_since_epoch = 1763273858
+nanos_since_epoch = 141414994
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/selector/mux.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 845900742
+secs_since_epoch = 1763273858
+nanos_since_epoch = 144075564
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/selector/mux.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 845928624
+secs_since_epoch = 1763273858
+nanos_since_epoch = 144103336
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/selector/selector_pkg.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 846138256
+secs_since_epoch = 1763273858
+nanos_since_epoch = 144310916
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/selector/selector_pkg.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 846153284
+secs_since_epoch = 1763273858
+nanos_since_epoch = 144326284
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/selector/test_selector.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 846198538
+secs_since_epoch = 1763273858
+nanos_since_epoch = 144364726
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/selector/test_selector.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 846213286
+secs_since_epoch = 1763273858
+nanos_since_epoch = 144379564
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/slicer/slicer.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 849193062
+secs_since_epoch = 1763273858
+nanos_since_epoch = 147251842
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/slicer/slicer.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 849225944
+secs_since_epoch = 1763273858
+nanos_since_epoch = 147284713
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/slicer/slicer_unit_fb.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 850491909
+secs_since_epoch = 1763273858
+nanos_since_epoch = 148589932
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/slicer/slicer_unit_fb.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 850514421
+secs_since_epoch = 1763273858
+nanos_since_epoch = 148612684
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/slicer/slicer_unit_hb.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 851232402
+secs_since_epoch = 1763273858
+nanos_since_epoch = 149356650
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/slicer/slicer_unit_hb.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 851250947
+secs_since_epoch = 1763273858
+nanos_since_epoch = 149376086
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/synchronizer/synchronizer.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 851272417
+secs_since_epoch = 1763273858
+nanos_since_epoch = 149399109
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/dependencies/std/synchronizer/synchronizer.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 851283227
+secs_since_epoch = 1763273858
+nanos_since_epoch = 149407275
+
+[generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/actual_top.sv"]
+secs_since_epoch = 1763273858
+nanos_since_epoch = 116792489
+
+[generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/actual_top.sv.map"]
+secs_since_epoch = 1763273858
+nanos_since_epoch = 116839618
+
+[generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/graphics.sv"]
+secs_since_epoch = 1763273858
+nanos_since_epoch = 116974411
+
+[generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/graphics.sv.map"]
+secs_since_epoch = 1763273858
+nanos_since_epoch = 116986283
+
+[generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/picorv.sv"]
+secs_since_epoch = 1763247295
+nanos_since_epoch = 373044326
+
+[generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/picorv.sv.map"]
+secs_since_epoch = 1763247295
+nanos_since_epoch = 373052993
+
+[generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/transmit.sv"]
+secs_since_epoch = 1763273858
+nanos_since_epoch = 118010564
+
+[generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/transmit.sv.map"]
+secs_since_epoch = 1763273858
+nanos_since_epoch = 118030221
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/arduino/arduino.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 810191724
+secs_since_epoch = 1763273858
+nanos_since_epoch = 118501976
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/arduino/arduino.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 815281272
+secs_since_epoch = 1763273858
+nanos_since_epoch = 118518367
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/arduino/receiver.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 817644797
+secs_since_epoch = 1763190089
+nanos_since_epoch = 583766398
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/arduino/receiver.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 817668982
+secs_since_epoch = 1763190089
+nanos_since_epoch = 583789982
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/me.sv"]
 secs_since_epoch = 1760028258
@@ -287,25 +319,25 @@ secs_since_epoch = 1760028258
 nanos_since_epoch = 898021269
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/music/music.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 817691785
+secs_since_epoch = 1763273858
+nanos_since_epoch = 118537713
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/music/music.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 817700471
+secs_since_epoch = 1763273858
+nanos_since_epoch = 118546710
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/sprites.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 817769350
+secs_since_epoch = 1763273858
+nanos_since_epoch = 118608856
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/sprites.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 817780220
+secs_since_epoch = 1763273858
+nanos_since_epoch = 118619106
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/top.sv"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819005659
+secs_since_epoch = 1763273858
+nanos_since_epoch = 119692369
 
 [generated_files."/home/aubrey/Projects/fpga-projects/ctech-project/target/src/top.sv.map"]
-secs_since_epoch = 1762973414
-nanos_since_epoch = 819032720
+secs_since_epoch = 1763273858
+nanos_since_epoch = 119721033

@@ -24,7 +24,7 @@ module video_timing_ctrl #(
 	
 	output	[13 : 0]	timing_h_pos,
 	output	[13 : 0]	timing_v_pos,
-	output	[13 : 0]	pixel_x,
+	output  [13 : 0]	pixel_x,
 	output	[13 : 0]	pixel_y,
 	
 	output				video_vsync,
@@ -44,7 +44,7 @@ module video_timing_ctrl #(
 	reg		[13 : 0]	h_pos;
 	reg		[13 : 0]	v_pos;
 	
-	wire	[13 : 0]	x_int;
+	wire 	[13 : 0]	x_int;
 	wire	[13 : 0]	y_int;
 	
 	wire				v_visible;
@@ -93,10 +93,10 @@ module video_timing_ctrl #(
 	end
 	
 	assign v_visible = ((v_pos >= t_vvis_begin) & (v_pos <= t_vvis_end)) ? 1'b1 : 1'b0;
-	assign h_visible = ((h_pos >= t_hvis_begin) & (h_pos <= t_hvis_end)) ? 1'b1 : 1'b0;
+	assign h_visible = (h_pos <= t_hvis_end) ? 1'b1 : 1'b0;
 	
 	assign x_int = (h_visible & v_visible) ? (h_pos - t_hvis_begin) : 0;
-	assign y_int = (v_visible) ? (v_pos - t_vvis_begin) : 0;
+	assign y_int = (h_visible & v_visible) ? (v_pos - t_vvis_begin) : 0;
 	
 	assign video_den = (h_visible & v_visible);
 	assign video_line_start = (v_visible & (h_pos == 0)) ? 1'b1 : 1'b0;

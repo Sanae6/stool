@@ -1,35 +1,39 @@
 module top (
-  clk: input clock         ,
-  rst: input reset_sync_low,
-
-  // awesome_pin: output logic,
+  clk: input clock          ,
+  rst: input reset_async_low,
 
   tmds_clk_n_0: output logic   ,
   tmds_clk_p_0: output logic   ,
   tmds_d_n_0  : output logic<3>,
   tmds_d_p_0  : output logic<3>,
 
-  ar_sck : input  'ar clock_negedge ,
-  ar_rst : input  'ar logic,
-  ar_copi: input  'ar logic         ,
+  // ar_sck : input 'ar clock_negedge,
+  // ar_rst : input 'ar logic        ,
+  // ar_copi: input 'ar logic        ,
   // ar_cipo: output 'ar logic         ,
+
+  uart_tx: output logic   ,
+  uart_rx: input  logic   ,
+  led    : output logic<8>,
 ) {
 
   var pll_lock:    logic;
+  var clk_rv  : '_ clock;
   var clk_p   : '_ clock;
   var clk_p5  : '_ clock;
   inst Gowin_PLL_inst: $sv::Gowin_PLL (
     lock    : pll_lock,
     clkout0 : clk_p   ,
     clkout1 : clk_p5  ,
+    clkout2 : clk_rv  ,
     init_clk: clk     ,
     clkin   : clk     ,
   );
 
-  var resetn :    reset_sync_low        ;
-  let rst_ext: '_ default reset_sync_low = rst & pll_lock;
+  var resetn :    reset_async_low        ;
+  let rst_ext: '_ default reset_async_low = rst & pll_lock;
   inst rsync: reset_sync (
-    clk            ,
+    clk   : clk_p  ,
     rst   : rst_ext,
     resetn         ,
   );
@@ -54,31 +58,8 @@ module top (
     tmds_d2 : {tmds_d_p_0[2], tmds_d_n_0[2]},
   );
 
-  // inst m : me (x: pixel_x, y: pixel_y, data: dvi_data, );
-  var off_color: '_ logic<24>;
-  inst a: arduino_comms (
-    clk               ,
-    rst               ,
-    ar_sck : ar_sck  ,
-    ar_rst : ar_rst  ,
-    ar_copi: ~ar_copi ,
-    // ar_cipo           ,
-    color  : off_color,
-  );
-
-  // let piss: 'ar logic<3> = {ar_sck, ar_rst, ar_copi};
-  unsafe (cdc) {
-    always_comb {
-      dvi_data = switch {
-        pixel_x <: 150: if ~ar_sck ? 24'hff0000 : 24'h220000,
-        pixel_x <: 300: if ar_rst ? 24'h00ff00 : 24'h002200,
-        pixel_x <: 450: if ~ar_copi ? 24'h0000ff : 24'h000022,
-        default       : off_color
-      };
-    }
-  }
-  var pixel_x   : logic<14>;
-  var pixel_y   : logic<14>;
+  var hpos      : logic<14>;
+  var vpos      : logic<14>;
   var line_start: logic    ;
   inst vtc: $sv::video_timing_ctrl #(
 
@@ -100,28 +81,41 @@ module top (
     rst        : resetn ,
     ext_sync   : (1'b0) ,
 
-    pixel_x: pixel_x,
-    pixel_y: pixel_y,
+    timing_h_pos: hpos,
+    timing_v_pos: vpos,
 
     video_vsync     : dvi_vsync ,
     video_hsync     : dvi_hsync ,
     video_den       : dvi_den   ,
     video_line_start: line_start,
   );
+
+  inst act: actual_top (
+    clk    : clk_rv    ,
+    clk_p    : clk_p    ,
+    rst    : ~rst     ,
+    vsync  : dvi_vsync,
+    hsync  : dvi_hsync,
+    hpos              ,
+    vpos              ,
+    pixel  : dvi_data ,
+    uart_tx           ,
+    led               ,
+  );
 }
 
 module reset_sync (
-  clk: input clock         ,
-  rst: input reset_sync_low,
+  clk: input clock          ,
+  rst: input reset_async_low,
 
-  resetn: output reset_sync_low,
+  resetn: output reset_async_low,
 ) {
   var count: logic<4>;
   always_ff (clk, rst) {
     if_reset {
       count = 0;
     } else {
-      count += &count;
+      count = count + !resetn;
     }
   }
   assign resetn = &count;
