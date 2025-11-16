@@ -7,13 +7,6 @@ module top (
   tmds_d_n_0  : output logic<3>,
   tmds_d_p_0  : output logic<3>,
 
-  // ar_sck : input 'ar clock_negedge,
-  // ar_rst : input 'ar logic        ,
-  // ar_copi: input 'ar logic        ,
-  // ar_cipo: output 'ar logic         ,
-
-  uart_tx: output logic   ,
-  uart_rx: input  logic   ,
   led    : output logic<8>,
 ) {
 
@@ -91,16 +84,13 @@ module top (
   );
 
   inst act: actual_top (
-    clk    : clk_rv    ,
-    clk_p    : clk_p    ,
+    clk    : clk_p    ,
     rst    : ~rst     ,
     vsync  : dvi_vsync,
     hsync  : dvi_hsync,
     hpos              ,
     vpos              ,
     pixel  : dvi_data ,
-    uart_tx           ,
-    led               ,
   );
 }
 

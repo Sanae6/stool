@@ -18,7 +18,7 @@
 -rst_o false
 -fclkin 50
 -dyn_idiv_sel false
--idiv_sel 2
+-idiv_sel 1
 -clkfb_sel 0
 -dyn_fbdiv_sel false
 -fbdiv_sel 1
@@ -28,7 +28,7 @@
 -dyn_dpa_en false
 -clkout0_bypass false
 -dyn_odiv0_sel false
--odiv0_sel 35
+-odiv0_sel 50
 -odiv0_frac_sel 0
 -dyn_dt0_sel false
 -clkout0_dt_dir 1
@@ -43,7 +43,7 @@
 -en_clkout1 true
 -clkout1_bypass false
 -dyn_odiv1_sel false
--odiv1_sel 7
+-odiv1_sel 10
 -dyn_dt1_sel false
 -clkout1_dt_dir 1
 -clkout1_dt_step 0
@@ -54,7 +54,7 @@
 -en_clkout2 true
 -clkout2_bypass false
 -dyn_odiv2_sel false
--odiv2_sel 1
+-odiv2_sel 2
 -dyn_dt2_sel false
 -clkout2_dt_dir 1
 -clkout2_dt_step 0
@@ -68,5 +68,5 @@
 -en_clkout6 false
 -en_clkfbout false
 -dyn_mdiv_sel false
--mdiv_sel 35
+-mdiv_sel 25
 -mdiv_frac_sel 2

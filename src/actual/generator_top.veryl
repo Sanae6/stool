@@ -1,0 +1,187 @@
+embed (inline) sv{{{
+  `timescale 1 ns / 1 ns
+}}}
+
+module generator_top (
+  clk          : input  clock          ,
+  rst          : input  reset_async_low,
+  done         : output logic          ,
+  puzzle_output: output types::bytes_t ,
+) {
+
+  var code_mem_value: logic<32>;
+  inst code_mem: $sv::code_memory (
+    address: mem_addr[0+:12],
+    value  : code_mem_value ,
+  );
+
+  var eoi         : logic<32>;
+  var irq         : logic<32>;
+  var pending_irqs: logic<32>;
+
+  always_ff {
+    if_reset {
+      irq          = 0;
+      pending_irqs = 0;
+    } else {
+      let temp        : logic<32> = {28'0, 1'0, 3'0};
+      pending_irqs = (pending_irqs & ~eoi) | temp;
+      irq          = pending_irqs;
+    }
+  }
+
+  var trap               : logic                     ;
+  var memory             : logic         <'h1000, 32>; // 4kib
+  var puzzle_output_words: types::words_t            ;
+  var mem_valid          : logic                     ;
+  var mem_instr          : logic                     ;
+  var mem_ready          : logic                     ;
+  var mem_addr           : logic         <32>        ;
+  var mem_wdata          : logic         <32>        ;
+  var mem_wstrb          : logic         <4>         ;
+  var mem_rdata          : logic         <32>        ;
+
+  inst pico: $sv::picorv32 #(
+    ENABLE_IRQ : 1,
+    ENABLE_PCPI: 1,
+    ENABLE_DIV : 1,
+  ) (
+    clk        ,
+    resetn: rst,
+    trap       ,
+
+    mem_valid  ,
+    mem_instr  ,
+    mem_ready  ,
+
+    mem_addr   ,
+    mem_wdata  ,
+    mem_wstrb  ,
+    mem_rdata  ,
+
+    mem_la_read : _,
+    mem_la_write: _,
+    mem_la_addr : _,
+    mem_la_wdata: _,
+    mem_la_wstrb: _,
+
+    pcpi_valid: _    ,
+    pcpi_insn : _    ,
+    pcpi_rs1  : _    ,
+    pcpi_rs2  : _    ,
+    pcpi_wr   : false,
+    pcpi_rd   : 0    ,
+    pcpi_wait : false,
+    pcpi_ready: false,
+
+    irq  ,
+    eoi  ,
+
+    trace_valid: _,
+    trace_data : _,
+  );
+
+  always_ff {
+    if_reset {
+      memory              = 0;
+      mem_rdata           = 0;
+      mem_ready           = false;
+      puzzle_output_words = 0;
+      puzzle_output       = 0;
+      done                = false;
+    } else {
+      memory              = memory;
+      puzzle_output_words = puzzle_output_words;
+      if trap {
+        // done!
+      } else if !mem_valid {
+        // do literally nothing
+        // $display ("memory not valid!");
+        mem_ready = false;
+      } else if mem_instr {
+        mem_rdata = code_mem_value;
+        mem_ready = true;
+        // $display ("instr fetch");
+      } else if mem_wstrb == 0 {
+        let value: logic<32> = case mem_addr[16+:4] {
+          0      : code_mem_value,
+          1      : memory[mem_addr[2+:8]],
+          default: 'hffffffff,
+        };
+        mem_rdata = value;
+        // $display ("got read", mem_addr[12+:4], mem_addr[0+:12], mem_rdata, code_mem_value, value);
+        mem_ready = true;
+      } else if mem_wstrb != 0 {
+        let device   : logic<4>  = mem_addr[16+:4];
+        let word_addr: logic<8>  = mem_addr[2+:8];
+        let word_mask: logic<32> = {
+          mem_wstrb[3] repeat 8,
+          mem_wstrb[2] repeat 8,
+          mem_wstrb[1] repeat 8,
+          mem_wstrb[0] repeat 8,
+        };
+
+        $display("got write %x %d %x %x %x", mem_addr[16+:4], word_addr, mem_addr[9:0], mem_wdata, word_mask);
+
+        mem_ready = true;
+        case device {
+          1: memory[word_addr]              = (memory[word_addr] & ~word_mask) | (mem_wdata & word_mask);
+          8: puzzle_output_words[word_addr] = (puzzle_output_words[word_addr] & ~word_mask) | (mem_wdata & word_mask);
+        }
+      }
+      puzzle_output = puzzle_output_words;
+      done          = trap;
+    }
+  }
+}
+
+#[test(gentop)]
+embed (inline) sv{{{
+
+  module test1dut;
+    var logic clk;
+    var logic rst;
+    var types::bytes_t puzzle_output;
+
+    generator_top top (
+      .clk(clk),
+      .rst(rst),
+      .done(),
+      .puzzle_output(puzzle_output)
+    );
+    
+    always #1 clk = ~clk;
+    initial begin
+      rst = 1;
+      #1 rst = 0;
+      #1 rst = 1;
+      // #1024 $finish;
+    end
+    integer i;
+    integer j;
+    always begin
+      #2
+      // $display("%t pc %x  x1 %x x2 %x x3 %x  irq %x %x %x"
+      //   , $realtime, top.pico.reg_pc
+      //   , top.pico.cpuregs[1], top.pico.cpuregs[2], top.pico.cpuregs[3]
+      //   , top.irq[0+:4], top.eoi[0+:4], top.pico.irq_mask[0+:4]);
+      if (top.trap) begin
+        $display("trapped!");
+        for (i = 0; i < 9; i++) begin
+          for (j = 0; j < 9; j++)
+            if (top.puzzle_output[i * 9 + j] == 0) $write("   ");
+            else $write("%d", top.puzzle_output[i * 9 + j]);
+          $display;
+        end
+        $display;
+        for (i = 0; i < 9; i++) begin
+          for (j = 0; j < 9; j++)
+            if (top.puzzle_output[84 + i * 9 + j] == 0) $write("   ");
+            else $write("%d", top.puzzle_output[84 + i * 9 + j]);
+          $display;
+        end
+        $finish;
+      end
+    end
+  endmodule
+}}}

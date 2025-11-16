@@ -20,20 +20,21 @@ verilog = [
 "target/src/top.sv",
 # "target/src/me.sv",
 # "src/arduino/ai_sync.v",
-"target/src/arduino/arduino.sv",
-"target/src/arduino/receiver.sv",
+# "target/src/arduino/arduino.sv",
+# "target/src/arduino/receiver.sv",
 "src/video-misc/video_timing_ctrl.v",
 
 "src/actual/picorv32.sv",
 "target/src/actual/actual_top.sv",
+"target/src/actual/generator_top.sv",
 "target/src/actual/graphics.sv",
-"target/src/actual/transmit.sv",
+"target/src/actual/types.sv",
 "src/actual/code_memory.sv"
 ]
 
 [options]
 verilog_std = "sysv2017"
-top_module = "ctech_top"
+top_module = "top"
 place_option = 3
 route_option = 2
 bit_compress = true
@@ -42,3 +43,4 @@ rpt_auto_place_io_info = true
 use_sspi_as_gpio = true
 # use_mspi_as_gpio = true
 use_cpu_as_gpio = true
+looplimit = 5000

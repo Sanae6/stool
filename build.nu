@@ -3,7 +3,15 @@ def "main test" [] {
   veryl test --verbose src/actual/actual_top.veryl src/actual/graphics.veryl
 }
 
+def fix_bypass [] {
+  let interfaces = sys net;
+  if ($interfaces | find -n 52:54:00:85:16:51 | is-empty) {
+    sudo ip link add name gowinbypass address 52:54:00:85:16:51 type veth
+  }
+}
+
 def main [] {
+  fix_bypass
   nu rv/compile.nu
   veryl build
   let project = open gwproj.toml
