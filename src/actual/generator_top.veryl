@@ -2,6 +2,12 @@ embed (inline) sv{{{
   `timescale 1 ns / 1 ns
 }}}
 
+// package types {
+//   type bytes_t = logic<168, 8>;
+//   type words_t = logic<42, 32>;
+// }
+import types::*;
+
 module generator_top (
   clk          : input  clock          ,
   rst          : input  reset_async_low,
@@ -83,12 +89,12 @@ module generator_top (
 
   always_ff {
     if_reset {
-      memory              = 0;
+      memory              = 'x;
       mem_rdata           = 0;
       mem_ready           = false;
-      puzzle_output_words = 0;
-      puzzle_output       = 0;
-      done                = false;
+      puzzle_output_words = 'x;
+      puzzle_output       = 'x;
+      done                = 'x;
     } else {
       memory              = memory;
       puzzle_output_words = puzzle_output_words;

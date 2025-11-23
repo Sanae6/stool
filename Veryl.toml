@@ -16,6 +16,8 @@ include_files = [
 "src/actual/picorv32.sv",
 "src/actual/code_memory.sv",
 "src/actual/code_memory.gen.sv",
+"src/actual/tiles.sv",
+"src/actual/tiles.gen.sv",
 ]
 
 [test.verilator]

@@ -47,6 +47,8 @@
             (python3.withPackages (p: [
               (p.callPackage ./cocotb.nix { })
               p.pytest
+              p.pillow
+              p.numpy
             ]))
             minicom
           ];

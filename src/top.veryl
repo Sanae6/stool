@@ -7,7 +7,8 @@ module top (
   tmds_d_n_0  : output logic<3>,
   tmds_d_p_0  : output logic<3>,
 
-  led    : output logic<8>,
+  led      : output logic<8>,
+  ir_signal: input  logic   ,
 ) {
 
   var pll_lock:    logic;
@@ -53,6 +54,8 @@ module top (
 
   var hpos      : logic<14>;
   var vpos      : logic<14>;
+  var pixel_x   : logic<14>;
+  var pixel_y   : logic<14>;
   var line_start: logic    ;
   inst vtc: $sv::video_timing_ctrl #(
 
@@ -60,8 +63,8 @@ module top (
     video_vlength: 525,
 
     video_hsync_pol: 0  ,
-    video_hsync_len: 96 ,
-    video_hbp_len  : 48 ,
+    video_hsync_len: 0  ,
+    video_hbp_len  : 0  ,
     video_h_visible: 640,
 
     video_vsync_pol: 0  ,
@@ -76,6 +79,8 @@ module top (
 
     timing_h_pos: hpos,
     timing_v_pos: vpos,
+    pixel_x           ,
+    pixel_y           ,
 
     video_vsync     : dvi_vsync ,
     video_hsync     : dvi_hsync ,
@@ -88,8 +93,8 @@ module top (
     rst    : ~rst     ,
     vsync  : dvi_vsync,
     hsync  : dvi_hsync,
-    hpos              ,
-    vpos              ,
+    pixel_x           ,
+    pixel_y           ,
     pixel  : dvi_data ,
   );
 }

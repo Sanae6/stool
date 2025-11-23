@@ -38,12 +38,12 @@ reset:
   # jal rotate_ccw_90
 
   la a0, solution
-  la a1, puzzle_output
+  la a1, solution_output
   jal substitute_and_output
 
-  # la a0, puzzle
-  # la a1, puzzle_output
-  # jal substitute_and_output
+  la a0, puzzle
+  la a1, puzzle_output
+  jal substitute_and_output
 
   li tp, 2
   ebreak

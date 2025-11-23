@@ -29,7 +29,8 @@ verilog = [
 "target/src/actual/generator_top.sv",
 "target/src/actual/graphics.sv",
 "target/src/actual/types.sv",
-"src/actual/code_memory.sv"
+"src/actual/code_memory.sv",
+"src/actual/tiles.sv"
 ]
 
 [options]

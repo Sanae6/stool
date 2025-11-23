@@ -1,3 +1,7 @@
+embed (inline) sv{{{
+  `timescale 1 ns / 1 ns
+}}}
+
 pub package types {
   type bytes_t = logic<168, 8>;
   type words_t = logic<42, 32>;
