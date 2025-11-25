@@ -1,1 +1,8 @@
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/top.sv
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/sprites.sv
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/music/music.sv
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/transmit.sv
 /home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/remote.sv
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/types.sv
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/generator_top.sv
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/actual_top.sv

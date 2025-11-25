@@ -2,7 +2,7 @@ embed (inline) sv{{{
 `timescale 1 ns / 1 ns
 }}}
 
-module actual_top (
+pub module actual_top (
   clk: input clock          ,
   rst: input reset_async_low,
 
@@ -15,20 +15,31 @@ module actual_top (
 
   pixel: output logic<24>,
 ) {
-  var packet: rc5::packet_t;
-  var has_packet: logic;
-  var new_packet: rc5::packet_t;
-  var has_new_packet   : logic        ;
+  var packet        : rc5::packet_t;
+  var has_packet    : logic        ;
+  var new_packet    : rc5::packet_t;
+  var has_new_packet: logic        ;
   inst rem: remote (
-    clk                         ,
-    rst                         ,
-    signal                      ,
-    value        : new_packet,
-    has_packet                  : has_new_packet,
+    clk                       ,
+    rst                       ,
+    signal                    ,
+    value     : new_packet    ,
+    has_packet: has_new_packet,
   );
 
   always_ff {
+    if_reset {
+      has_packet = false;
+      packet     = 'x;
+    } else {
+      has_packet = has_packet;
+      packet     = packet;
 
+      if has_new_packet {
+        has_packet = true;
+        packet     = new_packet;
+      }
+    }
   }
 
   var puzzle_output: types::bytes_t;
@@ -120,10 +131,10 @@ module actual_top (
             }
           }
         } else {
-          pixel = 24'h000000;
+          pixel = if has_packet ? 24'hFF0000 : 24'h000000;
         }
       } else {
-        pixel = 24'hF4EBD7;
+        pixel = if signal ? 24'h30ebd7 : 24'hF4EBD7;
       }
     }
   }

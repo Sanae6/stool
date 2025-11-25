@@ -1,6 +1,6 @@
 module top (
-  clk: input clock          ,
-  rst: input reset_async_low,
+  clk: input clock           ,
+  rst: input reset_async_high,
 
   tmds_clk_n_0: output logic   ,
   tmds_clk_p_0: output logic   ,
@@ -88,9 +88,23 @@ module top (
     video_line_start: line_start,
   );
 
+  var ever_led: logic;
+  always_ff (clk_p) {
+    if ~rst {
+      ever_led = 0;
+    } else {
+      ever_led |= ir_signal;
+    }
+  }
+  assign led[0]   = ~ir_signal;
+  assign led[1]   = ~ever_led;
+  assign led[7:2] = 0;
+  // assign led = act.rem.remdec.shift_reg;
+
   inst act: actual_top (
-    clk    : clk_p    ,
+    clk    : clk_p5   ,
     rst    : ~rst     ,
+    signal : ir_signal,
     vsync  : dvi_vsync,
     hsync  : dvi_hsync,
     pixel_x           ,

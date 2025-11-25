@@ -1,5 +1,6 @@
 {
   "[veryl]": {
     "editor.colorDecorators": false
-  }
+  },
+  "files.autoSave": "onFocusChange"
 }
