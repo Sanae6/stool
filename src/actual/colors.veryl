@@ -1,0 +1,178 @@
+pub package color_types {
+  struct status_t {
+    selected  : logic,
+    filled    : logic,
+    same_value: logic,
+    adjacent  : logic,
+  }
+}
+module colors (
+  number_value: input  logic                <4> ,
+  is_empty    : input  logic                    ,
+  cell_state  : input  color_types::status_t    ,
+  color_output: output logic                <24>,
+) {
+  let baseline: logic<16, 24> = {
+    24'hF4EBD7,
+    24'hDFD6C4,
+    24'hCAC2B1,
+    24'hB5AE9F,
+    24'hA19B8D,
+    24'h8D887C,
+    24'h7A756B,
+    24'h68635A,
+    24'h55524A,
+    24'h44413B,
+    24'h33312C,
+    24'h23221E,
+    24'h141311,
+    24'h070605,
+    24'h010101,
+    24'h000000
+  };
+
+  let selected: logic<16, 24> = {
+    24'hA1E2FF,
+    24'h93CEE9,
+    24'h84BBD3,
+    24'h76A8BE,
+    24'h6995A9,
+    24'h5B8394,
+    24'h4E7180,
+    24'h425F6D,
+    24'h354F5A,
+    24'h2A3E48,
+    24'h1E2F36,
+    24'h142026,
+    24'h091216,
+    24'h030608,
+    24'h000101,
+    24'h000000
+  };
+
+  let same_value: logic<16, 24> = {
+    24'hDBC39F,
+    24'hC8B291,
+    24'hB5A183,
+    24'hA29075,
+    24'h908067,
+    24'h7E705A,
+    24'h6D604D,
+    24'h5C5141,
+    24'h4C4335,
+    24'h3C3429,
+    24'h2D271E,
+    24'h1F1A13,
+    24'h110E09,
+    24'h060403,
+    24'h010100,
+    24'h000000
+  };
+
+  let adjacent: logic<16, 24> = {
+    24'hEFDABE,
+    24'hDAC7AD,
+    24'hC6B49D,
+    24'hB1A28C,
+    24'h9E8F7C,
+    24'h8A7E6D,
+    24'h786C5E,
+    24'h655C4F,
+    24'h544B41,
+    24'h423C33,
+    24'h322D26,
+    24'h221E19,
+    24'h14110D,
+    24'h070504,
+    24'h010101,
+    24'h000000
+  };
+
+  let baseline_filled: logic<16, 24> = {
+    24'hF4EBD7,
+    24'hE4E0D4,
+    24'hD4D5D0,
+    24'hC5CACC,
+    24'hB5BFC8,
+    24'hA6B4C4,
+    24'h97A9C0,
+    24'h889EBB,
+    24'h7993B7,
+    24'h6A88B2,
+    24'h5B7EAD,
+    24'h4D73A8,
+    24'h3E68A3,
+    24'h2F5D9E,
+    24'h1F5199,
+    24'h0B4693
+  };
+
+  let selected_filled: logic<16, 24> = {
+    24'hA1E2FF,
+    24'h97D7F8,
+    24'h8CCCF1,
+    24'h82C2EA,
+    24'h78B7E2,
+    24'h6EADDB,
+    24'h64A2D4,
+    24'h5A98CD,
+    24'h508DC6,
+    24'h4783BF,
+    24'h3D79B7,
+    24'h336FB0,
+    24'h2A65A9,
+    24'h205AA2,
+    24'h16509A,
+    24'h0B4693
+  };
+
+  let same_value_filled: logic<16, 24> = {
+    24'hDBC39F,
+    24'hCDBBA0,
+    24'hBFB3A1,
+    24'hB2ABA1,
+    24'hA4A3A1,
+    24'h979BA1,
+    24'h8A93A0,
+    24'h7D8BA0,
+    24'h6F839F,
+    24'h627A9E,
+    24'h55729C,
+    24'h486A9B,
+    24'h3B6199,
+    24'h2D5897,
+    24'h1E4F95,
+    24'h0B4693
+  };
+
+  let adjacent_filled: logic<16, 24> = {
+    24'hEFDABE,
+    24'hE0D0BD,
+    24'hD0C7BB,
+    24'hC1BDB9,
+    24'hB2B3B7,
+    24'hA3A9B4,
+    24'h95A0B2,
+    24'h8696AF,
+    24'h788CAC,
+    24'h6983A9,
+    24'h5B79A6,
+    24'h4D6FA2,
+    24'h3E659F,
+    24'h2F5B9B,
+    24'h1F5197,
+    24'h0B4693
+  };
+
+  always_comb {
+    // color_output = baseline_palette[number_value];
+    let value: logic<4> = if is_empty ? 'd15 : number_value;
+    // let value       : logic<4> = number_value;
+    color_output = switch {
+      cell_state.selected  : if cell_state.filled ? selected_filled[value] : selected[value],
+      cell_state.same_value: if cell_state.filled ? same_value_filled[value] : same_value[value],
+      cell_state.adjacent  : if cell_state.filled ? adjacent_filled[value] : adjacent[value],
+      default              : if cell_state.filled ? baseline_filled[value] : baseline[value]
+    };
+  }
+}

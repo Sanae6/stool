@@ -27,6 +27,8 @@ verilog = [
 "src/actual/picorv32.sv",
 "target/src/actual/actual_top.sv",
 "target/src/actual/generator_top.sv",
+"target/src/actual/board_state.sv",
+"target/src/actual/colors.sv",
 "target/src/actual/remote.sv",
 "target/src/actual/types.sv",
 "src/actual/code_memory.sv",

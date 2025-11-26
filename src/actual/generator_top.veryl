@@ -8,11 +8,11 @@ embed (inline) sv{{{
 // }
 import types::*;
 
-module generator_top (
-  clk          : input  clock          ,
-  rst          : input  reset_async_low,
-  done         : output logic          ,
-  puzzle_output: output types::bytes_t ,
+pub module generator_top (
+  clk          : input  clock         ,
+  rst          : input  reset_sync_low,
+  done         : output logic         ,
+  puzzle_output: output types::bytes_t,
 ) {
 
   var code_mem_value: logic<32>;
@@ -24,16 +24,19 @@ module generator_top (
   var eoi         : logic<32>;
   var irq         : logic<32>;
   var pending_irqs: logic<32>;
+  // var rst_n       : logic    ;
 
   always_ff {
-    if_reset {
-      irq          = 0;
-      pending_irqs = 0;
-    } else {
-      let temp        : logic<32> = {28'0, 1'0, 3'0};
-      pending_irqs = (pending_irqs & ~eoi) | temp;
-      irq          = pending_irqs;
-    }
+    irq          = 0;
+    pending_irqs = 0;
+    // if_reset {
+    //   irq          = 0;
+    //   pending_irqs = 0;
+    // } else {
+    //   let temp        : logic<32> = {28'0, 1'0, 3'0};
+    //   pending_irqs = (pending_irqs & ~eoi) | temp;
+    //   irq          = pending_irqs;
+    // }
   }
 
   var trap               : logic                     ;

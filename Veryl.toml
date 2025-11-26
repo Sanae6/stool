@@ -5,7 +5,7 @@ version = "0.1.0"
 [build]
 target = { type = "directory", path = "target" }
 clock_type = "posedge"
-reset_type = "async_low"
+reset_type = "sync_high"
 omit_project_prefix = true
 
 [format]

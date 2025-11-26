@@ -5,4 +5,6 @@
 /home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/remote.sv
 /home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/types.sv
 /home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/generator_top.sv
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/board_state.sv
+/home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/colors.sv
 /home/aubrey/Projects/fpga-projects/ctech-project/target/src/actual/actual_top.sv

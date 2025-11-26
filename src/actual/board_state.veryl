@@ -1,0 +1,87 @@
+module board_state (
+  clk          : input  clock            ,
+  rst          : input  reset            ,
+  cursor_x     : output logic         <4>,
+  cursor_y     : output logic         <4>,
+  pick_mode    : output logic            ,
+  pick_cursor_x: output logic         <2>,
+  pick_cursor_y: output logic         <2>,
+  button       : input  logic         <5>,
+  puzzle_output: input  types::bytes_t   ,
+) {
+  var pos: logic<8>;
+
+  var button_state: logic<5>     [2];
+  let button_down : logic<5>         = ~button_state[0] & button_state[1];
+  let button_up   : logic<5>         = button_state[0] & ~button_state[1];
+  var counter     : logic<5, 24>    ;
+  always_ff {
+    if_reset {
+      counter = 0;
+    }
+    counter         = counter;
+    button_state[1] = button_state[0];
+    button_state[0] = button;
+    for i: u32 in 0..5 {
+      if button_up[i] {
+        counter[i] = 6.3e6;
+      }
+      if (counter[i] >: 0) {
+        button_state[0][i] =  0;
+        button_state[1][i] =  0;
+        counter            -= 1;
+      }
+    }
+  }
+
+  assign pos = cursor_y * 9 + cursor_x;
+
+  function update_cursor (
+    cursor_x: input  logic,
+    cursor_y: input  logic,
+    new_x   : output logic,
+    new_y   : output logic,
+  ) {
+    if button_down[0] {
+      new_x = if new_x == 0 ? 8 : new_x - 1;
+    }
+    if button_down[1] {
+      new_y = if new_y == 8 ? 0 : new_y + 1;
+    }
+    if button_down[2] {
+      new_y = if new_y == 0 ? 8 : new_y - 1;
+    }
+    if button_down[3] {
+      new_x = if new_x == 8 ? 0 : new_x + 1;
+    }
+    if button_down[4] {}
+  }
+
+  always_ff {
+    if_reset {
+      cursor_x      = 0;
+      cursor_y      = 0;
+      pick_cursor_x = 0;
+      pick_cursor_y = 0;
+      pick_mode     = false;
+    } else {
+      cursor_x      = cursor_x;
+      cursor_y      = cursor_y;
+      pick_cursor_x = pick_cursor_x;
+      pick_cursor_x = pick_cursor_y;
+      if !pick_mode {
+        var new_x        : logic<4>;
+        var new_y        : logic<4>;
+        update_cursor(cursor_x, cursor_y, new_x, new_y);
+        cursor_x      = new_x;
+        cursor_y      = new_y;
+      } else {
+        var new_x        : logic<4>;
+        var new_y        : logic<4>;
+        update_cursor(pick_cursor_x, pick_cursor_y, new_x, new_y);
+        new_x         = pick_cursor_x;
+        new_y         = pick_cursor_y;
+      }
+    }
+  }
+}

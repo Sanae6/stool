@@ -1,14 +1,14 @@
 module top (
-  clk: input clock           ,
-  rst: input reset_async_high,
+  clk: input clock          ,
+  rst: input reset_async_low,
 
   tmds_clk_n_0: output logic   ,
   tmds_clk_p_0: output logic   ,
   tmds_d_n_0  : output logic<3>,
   tmds_d_p_0  : output logic<3>,
 
-  led      : output logic<8>,
-  ir_signal: input  logic   ,
+  button: input  logic<5>,
+  led   : output logic<8>,
 ) {
 
   var pll_lock:    logic;
@@ -24,10 +24,10 @@ module top (
     clkin   : clk     ,
   );
 
-  var resetn :    reset_async_low        ;
-  let rst_ext: '_ default reset_async_low = rst & pll_lock;
+  var resetn :    reset_sync_low ;
+  let rst_ext: '_ reset_async_low = rst & pll_lock;
   inst rsync: reset_sync (
-    clk   : clk_p  ,
+    clk   : clk_p5 ,
     rst   : rst_ext,
     resetn         ,
   );
@@ -88,28 +88,15 @@ module top (
     video_line_start: line_start,
   );
 
-  var ever_led: logic;
-  always_ff (clk_p) {
-    if ~rst {
-      ever_led = 0;
-    } else {
-      ever_led |= ir_signal;
-    }
-  }
-  assign led[0]   = ~ir_signal;
-  assign led[1]   = ~ever_led;
-  assign led[7:2] = 0;
-  // assign led = act.rem.remdec.shift_reg;
-
   inst act: actual_top (
-    clk    : clk_p5   ,
-    rst    : ~rst     ,
-    signal : ir_signal,
+    clk    : clk_p    ,
+    rst    : resetn   ,
     vsync  : dvi_vsync,
     hsync  : dvi_hsync,
     pixel_x           ,
     pixel_y           ,
     pixel  : dvi_data ,
+    button            ,
   );
 }
 
@@ -117,9 +104,9 @@ module reset_sync (
   clk: input clock          ,
   rst: input reset_async_low,
 
-  resetn: output reset_async_low,
+  resetn: output reset_sync_low,
 ) {
-  var count: logic<4>;
+  var count: logic<16>;
   always_ff (clk, rst) {
     if_reset {
       count = 0;

@@ -1,47 +1,20 @@
 embed (inline) sv{{{
 `timescale 1 ns / 1 ns
 }}}
+import color_types::*;
 
 pub module actual_top (
   clk: input clock          ,
-  rst: input reset_async_low,
+  rst: input reset_sync_high,
 
   vsync  : input logic    ,
   hsync  : input logic    ,
   pixel_x: input logic<14>,
   pixel_y: input logic<14>,
 
-  signal: input logic,
-
-  pixel: output logic<24>,
+  button: input  logic<5> ,
+  pixel : output logic<24>,
 ) {
-  var packet        : rc5::packet_t;
-  var has_packet    : logic        ;
-  var new_packet    : rc5::packet_t;
-  var has_new_packet: logic        ;
-  inst rem: remote (
-    clk                       ,
-    rst                       ,
-    signal                    ,
-    value     : new_packet    ,
-    has_packet: has_new_packet,
-  );
-
-  always_ff {
-    if_reset {
-      has_packet = false;
-      packet     = 'x;
-    } else {
-      has_packet = has_packet;
-      packet     = packet;
-
-      if has_new_packet {
-        has_packet = true;
-        packet     = new_packet;
-      }
-    }
-  }
-
   var puzzle_output: types::bytes_t;
   var done         : logic         ;
   inst gentop: generator_top (
@@ -50,40 +23,64 @@ pub module actual_top (
     puzzle_output  ,
     done           ,
   );
-  var tileset       : logic<48, 48, 4> [9];
-  let number_palette: logic<16, 24>        = {
-    24'hF4EBD7,
-    24'hDFD6C4,
-    24'hCAC2B1,
-    24'hB5AE9F,
-    24'hA19B8D,
-    24'h8D887C,
-    24'h7A756B,
-    24'h68635A,
-    24'h55524A,
-    24'h44413B,
-    24'h33312C,
-    24'h23221E,
-    24'h141311,
-    24'h070605,
-    24'h010101,
-    24'h000000
-  };
+  var pick_mode     : logic    ;
+  var cell_x        : logic<14>;
+  var cell_y        : logic<14>;
+  var cell_rel_x    : logic<14>;
+  var cell_rel_y    : logic<14>;
+  let cursor_block_x: logic<2>  = cursor_x / 3;
+  let cursor_block_y: logic<2>  = cursor_y / 3;
+  let block_x       : logic<2>  = cell_x / 3;
+  let block_y       : logic<2>  = cell_y / 3;
+  // let cell_value    : logic<4>  = if cell_rel_x >: 24 ? ((cell_y * 9 + cell_x) % 9) + 1 : puzzle_output[cell_y * 9 + cell_x];
+  var cell_value: logic<4>;
+  // let cell_value  : logic<4>  = ;
+  always_comb {
+    let pick_start: logic<14> = 12 + 456;
+    if pixel_x <: pick_start {
+      cell_x     = (pixel_x - 16) / 50;
+      cell_y     = (pixel_y - 16) / 50;
+      cell_rel_x = (pixel_x - 16) % 50;
+      cell_rel_y = (pixel_y - 16) % 50;
+      cell_value = puzzle_output[cell_y * 9 + cell_x];
+    } else {
+      cell_x     = (pixel_x - pick_start) / 50;
+      cell_y     = (pixel_y - 16) / 50;
+      cell_rel_x = (pixel_x - pick_start) % 50;
+      cell_rel_y = (pixel_y - 16) % 50;
+    }
+  }
+  var number_value: logic<4>;
   inst nums: $sv::numbers (
-    tileset  ,
+    clk                   ,
+    rst                   ,
+    number: cell_value    ,
+    x     : cell_rel_x + 1,
+    y     : cell_rel_y    ,
+    value : number_value  ,
   );
-  let colors: logic<24> [10] = '{
-    24'hFFFFFF,
-    24'hFF0000,
-    24'hFFAA00,
-    24'hAAFF00,
-    24'h00FF00,
-    24'h00FFAA,
-    24'h00AAFF,
-    24'h0000FF,
-    24'hAA00FF,
-    24'hFF00AA
-  };
+  var cursor_x: logic<4>;
+  var cursor_y: logic<4>;
+  inst state: board_state (
+    clk            ,
+    rst            ,
+    button         ,
+    cursor_x       ,
+    cursor_y       ,
+    puzzle_output  ,
+  );
+  var color_output: logic<24>;
+  inst palette: colors (
+    number_value                 ,
+    is_empty    : cell_value == 0,
+    cell_state  : status_t'{
+      selected    : cursor_x == cell_x && cursor_y == cell_y                                                            ,
+      filled      : false                                                                                               , // todo: actual game state in board_state
+      same_value  : cell_value != 0 && puzzle_output[cursor_y * 9 + cursor_x] == cell_value                             ,
+      adjacent    : (cursor_block_x == block_x && cursor_block_y == block_y) || cell_x == cursor_x || cell_y == cursor_y,
+    },
+    color_output  ,
+  );
 
   function in_box (
     x     : input logic<14>,
@@ -113,28 +110,27 @@ pub module actual_top (
 
       if in_box(x, y, 12, 12 + 456, 12, 12 + 456) { // in the grid (inc border)
         if in_box(x, y, 16, 16 + 448, 16, 16 + 448) { // in the grid (excl border)
-          let cell_x    : logic<14> = (x - 16) / 50;
-          let cell_y    : logic<14> = (y - 16) / 50;
-          let cell_rel_x: logic<14> = (x - 16) % 50;
-          let cell_rel_y: logic<14> = (y - 16) % 50;
           if cell_rel_x >= 48 || cell_rel_y >= 48 { // is a grid boundary
             // darker lines on 3x3 boundaries
             pixel = if cell_x % 3 == 2 && cell_rel_x >= 48 || cell_y % 3 == 2 && cell_rel_y >= 48 ? 24'h555555 : 24'h888888;
           } else {
-            let cell_value: logic<8> = puzzle_output[0 + cell_y * 9 + cell_x];
-            if cell_value == 0 {
-              // todo: sel/adj/match status
-              pixel = 24'hF4EBD7;
-            } else {
-              let cell_tile: logic<4> = tileset[cell_value - 1][cell_rel_y][cell_rel_x];
-              pixel     = number_palette[cell_tile];
-            }
+            // if cell_value == 0 {
+            //   // todo: sel/adj/match status
+            //   pixel = 24'hF4EBD7;
+            // } else {
+            pixel = color_output;
+            // }
           }
         } else {
-          pixel = if has_packet ? 24'hFF0000 : 24'h000000;
+          pixel = 24'h000000;
         }
+      } else if in_box(x, y, 480, 480 + 128, 12, 12 + 32 * 5) {
+        let btn  : logic<3> = (y - 12) / 5;
+        pixel = if button[btn] ? 24'h00FF00 : 24'h0000FF;
+      } else if y >: 400 {
+        pixel = if rst ? 24'h00FF00 : 24'h0000FF;
       } else {
-        pixel = if signal ? 24'h30ebd7 : 24'hF4EBD7;
+        pixel = 24'hF4EBD7;
       }
     }
   }
