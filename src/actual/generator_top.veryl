@@ -1,6 +1,6 @@
-embed (inline) sv{{{
-  `timescale 1 ns / 1 ns
-}}}
+// embed (inline) sv{{{
+//   `timescale 1 ns / 1 ns
+// }}}
 
 // package types {
 //   type bytes_t = logic<168, 8>;

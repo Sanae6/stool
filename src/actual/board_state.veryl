@@ -1,62 +1,86 @@
 module board_state (
-  clk          : input  clock            ,
-  rst          : input  reset            ,
-  cursor_x     : output logic         <4>,
-  cursor_y     : output logic         <4>,
-  pick_mode    : output logic            ,
-  pick_cursor_x: output logic         <2>,
-  pick_cursor_y: output logic         <2>,
-  button       : input  logic         <5>,
-  puzzle_output: input  types::bytes_t   ,
+  clk          : input  clock              ,
+  rst          : input  reset              ,
+  cursor_x     : output logic           <4>,
+  cursor_y     : output logic           <4>,
+  pick_mode    : output logic              ,
+  pick_cursor_x: output logic           <2>,
+  pick_cursor_y: output logic           <2>,
+  button       : input  logic           <6>,
+  puzzle_output: input  types::bytes_t     ,
+  filled_output: output types::current_t   ,
+  button_down  : output logic           <6>,
 ) {
-  var pos: logic<8>;
 
-  var button_state: logic<5>     [2];
-  let button_down : logic<5>         = ~button_state[0] & button_state[1];
-  let button_up   : logic<5>         = button_state[0] & ~button_state[1];
-  var counter     : logic<5, 24>    ;
+  var prev_button_state: logic<6>;
+  // let button_up   : logic<6>      = ~|prev_button_state[64+:64] && prev_button_state[0+:64];
+  var counter: logic<24>;
   always_ff {
     if_reset {
       counter = 0;
-    }
-    counter         = counter;
-    button_state[1] = button_state[0];
-    button_state[0] = button;
-    for i: u32 in 0..5 {
-      if button_up[i] {
-        counter[i] = 6.3e6;
+      // prev_button_state = 0;
+      prev_button_state = 0;
+      button_down       = 0;
+    } else {
+      let actual_btns      : logic<6> = ~button;
+      prev_button_state =  prev_button_state;
+      button_down       =  0;
+      counter           += 1;
+      if counter == 2100000 {
+        prev_button_state = actual_btns;
+        button_down       = ~prev_button_state & actual_btns;
+        counter           = 0;
       }
-      if (counter[i] >: 0) {
-        button_state[0][i] =  0;
-        button_state[1][i] =  0;
-        counter            -= 1;
-      }
+      // for i: u32 in 127..1 {
+      //   prev_button_state[i] = prev_button_state[i - 1];
+      // }
+      // prev_button_state[0] = !button;
+      // for i: u32 in 0..6 {
+      //   button_down[i] = &prev_button_state[i];
+      //   if (counter[i] >: 0) {
+      //     counter[i] -= 1;
+      //   }
+      //   if button_down[i] {
+      //     counter[i] = 6300000;
+      //   }
+      // }
     }
   }
-
-  assign pos = cursor_y * 9 + cursor_x;
 
   function update_cursor (
-    cursor_x: input  logic,
-    cursor_y: input  logic,
-    new_x   : output logic,
-    new_y   : output logic,
+    cur_x        : input  logic<4>,
+    cur_y        : input  logic<4>,
+    new_x        : output logic<4>,
+    new_y        : output logic<4>,
+    new_pick_mode: output logic   ,
+    length       : input  logic<4>,
   ) {
+    new_x         = cur_x;
+    new_y         = cur_y;
+    new_pick_mode = pick_mode;
+    let lenm1        : logic<4> = length - 1;
     if button_down[0] {
-      new_x = if new_x == 0 ? 8 : new_x - 1;
+      new_x = if cur_x == 0 ? lenm1 : cur_x - 1;
     }
     if button_down[1] {
-      new_y = if new_y == 8 ? 0 : new_y + 1;
+      new_y = if cur_y == lenm1 ? 0 : cur_y + 1;
     }
     if button_down[2] {
-      new_y = if new_y == 0 ? 8 : new_y - 1;
+      new_y = if cur_y == 0 ? lenm1 : cur_y - 1;
     }
     if button_down[3] {
-      new_x = if new_x == 8 ? 0 : new_x + 1;
+      new_x = if cur_x == lenm1 ? 0 : cur_x + 1;
     }
-    if button_down[4] {}
+    if button_down[4] {
+      new_pick_mode = !pick_mode;
+    }
+    if button_down[5] {
+      new_pick_mode = false;
+    }
   }
 
+  let cursor_offset   : logic<7> = cursor_y * 9 + cursor_x;
+  let is_cell_complete: bool     = puzzle_output[cursor_offset] | filled_output[cursor_offset] == puzzle_output[84 + cursor_offset];
   always_ff {
     if_reset {
       cursor_x      = 0;
@@ -64,23 +88,34 @@ module board_state (
       pick_cursor_x = 0;
       pick_cursor_y = 0;
       pick_mode     = false;
+      filled_output = 0;
     } else {
       cursor_x      = cursor_x;
       cursor_y      = cursor_y;
       pick_cursor_x = pick_cursor_x;
       pick_cursor_x = pick_cursor_y;
+      var new_pick_mode: logic;
       if !pick_mode {
-        var new_x        : logic<4>;
-        var new_y        : logic<4>;
-        update_cursor(cursor_x, cursor_y, new_x, new_y);
-        cursor_x      = new_x;
-        cursor_y      = new_y;
+        var new_cursor_x : logic<4>;
+        var new_cursor_y : logic<4>;
+        update_cursor(cursor_x, cursor_y, new_cursor_x, new_cursor_y, new_pick_mode, 9);
+        cursor_x      = new_cursor_x % 9;
+        cursor_y      = new_cursor_y % 9;
+        if is_cell_complete {
+          new_pick_mode = false;
+        }
       } else {
-        var new_x        : logic<4>;
-        var new_y        : logic<4>;
-        update_cursor(pick_cursor_x, pick_cursor_y, new_x, new_y);
-        new_x         = pick_cursor_x;
-        new_y         = pick_cursor_y;
+        var new_pick_x   : logic<4>;
+        var new_pick_y   : logic<4>;
+        update_cursor(pick_cursor_x, pick_cursor_y, new_pick_x, new_pick_y, new_pick_mode, 3);
+        pick_cursor_x = new_pick_x % 3;
+        pick_cursor_y = new_pick_y % 3;
+      }
+
+      pick_mode     = new_pick_mode;
+      filled_output = filled_output;
+      if !new_pick_mode && pick_mode { // exiting pick mode with pick button
+        filled_output[cursor_offset] = if button_down[5] ? pick_cursor_y * 3 + pick_cursor_x + 1 : 0;
       }
     }
   }

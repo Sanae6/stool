@@ -1,6 +1,6 @@
-embed (inline) sv{{{
-`timescale 1 ns / 1 ns
-}}}
+// embed (inline) sv{{{
+// `timescale 1 ns / 1 ns
+// }}}
 import color_types::*;
 
 pub module actual_top (
@@ -12,17 +12,25 @@ pub module actual_top (
   pixel_x: input logic<14>,
   pixel_y: input logic<14>,
 
-  button: input  logic<5> ,
+  button: input  logic<6> ,
   pixel : output logic<24>,
 ) {
-  var puzzle_output: types::bytes_t;
-  var done         : logic         ;
+  var puzzle_output: types::bytes_t  ;
+  var filled_output: types::current_t;
+  var done         : logic           ;
   inst gentop: generator_top (
     clk            ,
     rst            ,
     puzzle_output  ,
     done           ,
   );
+
+  function value_at (
+    position: input logic<7>,
+  ) -> logic<4> {
+    return if puzzle_output[position] == 0 ? filled_output[position] : puzzle_output[position];
+  }
+
   var pick_mode     : logic    ;
   var cell_x        : logic<14>;
   var cell_y        : logic<14>;
@@ -33,8 +41,11 @@ pub module actual_top (
   let block_x       : logic<2>  = cell_x / 3;
   let block_y       : logic<2>  = cell_y / 3;
   // let cell_value    : logic<4>  = if cell_rel_x >: 24 ? ((cell_y * 9 + cell_x) % 9) + 1 : puzzle_output[cell_y * 9 + cell_x];
-  var cell_value: logic<4>;
-  // let cell_value  : logic<4>  = ;
+  var cell_value    : logic   <4>;
+  var cell_state    : status_t   ;
+  let current_offset: logic   <7> = cell_y * 9 + cell_x;
+  let cursor_offset : logic   <7> = cursor_y * 9 + cursor_x;
+
   always_comb {
     let pick_start: logic<14> = 12 + 456;
     if pixel_x <: pick_start {
@@ -42,12 +53,27 @@ pub module actual_top (
       cell_y     = (pixel_y - 16) / 50;
       cell_rel_x = (pixel_x - 16) % 50;
       cell_rel_y = (pixel_y - 16) % 50;
-      cell_value = puzzle_output[cell_y * 9 + cell_x];
+      cell_value = value_at(current_offset);
+      cell_state = status_t'{
+        selected  : cursor_x == cell_x && cursor_y == cell_y                                                            ,
+        filled    : filled_output[current_offset] != 0                                                                  ,
+        same_value: cell_value != 0 && value_at(cursor_offset) == cell_value                                            ,
+        adjacent  : (cursor_block_x == block_x && cursor_block_y == block_y) || cell_x == cursor_x || cell_y == cursor_y,
+        invalid   : value_at(current_offset) != 0 && value_at(current_offset) != puzzle_output[84 + current_offset]     ,
+      };
     } else {
       cell_x     = (pixel_x - pick_start) / 50;
       cell_y     = (pixel_y - 16) / 50;
       cell_rel_x = (pixel_x - pick_start) % 50;
       cell_rel_y = (pixel_y - 16) % 50;
+      cell_value = cell_y * 3 + cell_x + 1;
+      cell_state = status_t'{
+        selected  : pick_cursor_x == cell_x && pick_cursor_y == cell_y,
+        filled    : false                                             ,
+        same_value: false                                             ,
+        adjacent  : false                                             ,
+        invalid   : false                                             ,
+      };
     }
   }
   var number_value: logic<4>;
@@ -59,27 +85,30 @@ pub module actual_top (
     y     : cell_rel_y    ,
     value : number_value  ,
   );
-  var cursor_x: logic<4>;
-  var cursor_y: logic<4>;
+  var cursor_x     : logic<4>;
+  var cursor_y     : logic<4>;
+  var pick_cursor_x: logic<2>;
+  var pick_cursor_y: logic<2>;
+  var button_down  : logic<6>;
   inst state: board_state (
     clk            ,
     rst            ,
     button         ,
     cursor_x       ,
     cursor_y       ,
+    filled_output  ,
     puzzle_output  ,
+    pick_mode      ,
+    pick_cursor_x  ,
+    pick_cursor_y  ,
+    button_down    ,
   );
   var color_output: logic<24>;
   inst palette: colors (
     number_value                 ,
     is_empty    : cell_value == 0,
-    cell_state  : status_t'{
-      selected    : cursor_x == cell_x && cursor_y == cell_y                                                            ,
-      filled      : false                                                                                               , // todo: actual game state in board_state
-      same_value  : cell_value != 0 && puzzle_output[cursor_y * 9 + cursor_x] == cell_value                             ,
-      adjacent    : (cursor_block_x == block_x && cursor_block_y == block_y) || cell_x == cursor_x || cell_y == cursor_y,
-    },
-    color_output  ,
+    cell_state                   ,
+    color_output                 ,
   );
 
   function in_box (
@@ -114,21 +143,28 @@ pub module actual_top (
             // darker lines on 3x3 boundaries
             pixel = if cell_x % 3 == 2 && cell_rel_x >= 48 || cell_y % 3 == 2 && cell_rel_y >= 48 ? 24'h555555 : 24'h888888;
           } else {
-            // if cell_value == 0 {
-            //   // todo: sel/adj/match status
-            //   pixel = 24'hF4EBD7;
-            // } else {
             pixel = color_output;
-            // }
           }
         } else {
           pixel = 24'h000000;
         }
-      } else if in_box(x, y, 480, 480 + 128, 12, 12 + 32 * 5) {
-        let btn  : logic<3> = (y - 12) / 5;
-        pixel = if button[btn] ? 24'h00FF00 : 24'h0000FF;
+      } else if in_box(x, y, 12 + 456, 12 + 456 + 148, 16, 16 + 148) {
+        if cell_rel_x >= 48 || cell_rel_y >= 48 { // is a grid boundary
+          // darker lines on 3x3 boundaries
+          pixel = if cell_x % 3 == 2 && cell_rel_x >= 48 || cell_y % 3 == 2 && cell_rel_y >= 48 ? 24'h555555 : 24'h888888;
+        } else {
+          pixel = color_output;
+        }
+
+      } else if in_box(x, y, 480, 480 + 128, 12 + 148, 12 + 148 + 120) {
+        let btn: logic<3> = (y - (12 + 148)) / 20;
+        if x >: 480 + 64 {
+          pixel = if button_down[btn] ? 24'hFF0000 : 24'h0000FF;
+        } else {
+          pixel = if button[btn] ? 24'h00FF00 : 24'h0000FF;
+        }
       } else if y >: 400 {
-        pixel = if rst ? 24'h00FF00 : 24'h0000FF;
+        pixel = if filled_output[cursor_offset] == puzzle_output[cursor_offset] ? 24'h00FF00 : 24'h0000FF;
       } else {
         pixel = 24'hF4EBD7;
       }

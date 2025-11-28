@@ -3,6 +3,7 @@ embed (inline) sv{{{
 }}}
 
 pub package types {
-  type bytes_t = logic<168, 8>;
-  type words_t = logic<42, 32>;
+  type bytes_t   = logic<168, 8>;
+  type words_t   = logic<42, 32>;
+  type current_t = logic<81, 4> ;
 }

@@ -4,7 +4,7 @@ embed (inline) sv{{{
 
 pub package rc5 {
   struct packet_t {
-    start: logic<2>,
+    start  : logic<2>,
     toggle : logic   ,
     address: logic<5>,
     command: logic<6>,
@@ -26,12 +26,12 @@ pub module remote (
 
   type pkt_logic = logic<14>;
 
-  inst remdec: remote_manchester(
-    clk,
-    rst,
-    manchester_in: signal,
-    data_out: value,
-    data_valid: has_packet
+  inst remdec: remote_manchester (
+    clk                      ,
+    rst                      ,
+    manchester_in: signal    ,
+    data_out     : value     ,
+    data_valid   : has_packet,
   );
 
   // var out_bit: logic;
@@ -71,11 +71,11 @@ pub module remote (
 }
 
 module remote_manchester (
-  clk          : input  clock   ,
-  rst        : input  reset   ,
-  manchester_in: input  logic   ,
+  clk          : input  clock    ,
+  rst          : input  reset    ,
+  manchester_in: input  logic    ,
   data_out     : output logic<14>,
-  data_valid   : output logic   ,
+  data_valid   : output logic    ,
 ) {
   // Timing parameters for 36 kHz Manchester
   // Bit period = 1/36kHz = 27.78 us
@@ -123,7 +123,7 @@ module remote_manchester (
 
       if edge_detected {
         // Reset timer on each edge
-        timer = 0;
+        timer    = 0;
         $display("edgeing");
       } else if timer <: HALF_BIT_COUNT {
         timer = timer + 1;
@@ -131,7 +131,7 @@ module remote_manchester (
         // Trigger sample at the middle of half-bit
         if timer == SAMPLE_POINT {
           sample_now = 1;
-          $display("sampling", manchester_sync2);
+          $display  ("sampling", manchester_sync2);
         }
       } else {
         timer = 0;
@@ -146,10 +146,10 @@ module remote_manchester (
     SECOND_HALF = 2,
   }
 
-  var state           : State   ;
-  var first_half_value: logic   ;
+  var state           : State    ;
+  var first_half_value: logic    ;
   var shift_reg       : logic<14>;
-  var bit_count       : logic<4>;
+  var bit_count       : logic<4> ;
 
   always_ff {
     if_reset {
@@ -160,24 +160,24 @@ module remote_manchester (
       data_valid       = 0;
       first_half_value = 0;
     } else {
-      data_valid = false;
-      shift_reg = shift_reg;
-      bit_count = bit_count;
+      data_valid       = false;
+      shift_reg        = shift_reg;
+      bit_count        = bit_count;
       first_half_value = first_half_value;
-      state = state;
+      state            = state;
 
       case state {
         State::IDLE: {
           if edge_detected {
-            $display("edge detected in idle");
-            state     = State::SECOND_HALF;
+            $display        ("edge detected in idle");
+            state            = State::SECOND_HALF;
             first_half_value = ~manchester_sync2;
-            bit_count = 0;
+            bit_count        = 0;
           }
         }
         State::FIRST_HALF: {
           if sample_now {
-            $display("first half %b", manchester_sync2);
+            $display        ("first half %b", manchester_sync2);
             first_half_value = manchester_sync2;
             state            = State::SECOND_HALF;
           }
@@ -191,14 +191,14 @@ module remote_manchester (
             if !first_half_value && manchester_sync2 {
               // Rising edge: decoded bit = 1
               shift_reg = {shift_reg[12:0], 1'b1};
-              $display("one bit %b %d", {shift_reg[12:0], 1'b1}, bit_count);
+              $display ("one bit %b %d", {shift_reg[12:0], 1'b1}, bit_count);
             } else if first_half_value && !manchester_sync2 {
               // Falling edge: decoded bit = 0
               shift_reg = {shift_reg[12:0], 1'b0};
-              $display("zero bit %b %d", {shift_reg[12:0], 1'b0}, bit_count);
+              $display ("zero bit %b %d", {shift_reg[12:0], 1'b0}, bit_count);
             } else {
               // Invalid Manchester - no transition
-              state = State::IDLE;
+              state    = State::IDLE;
               $display("invalid manchester bit");
             }
 

@@ -7,7 +7,7 @@ module top (
   tmds_d_n_0  : output logic<3>,
   tmds_d_p_0  : output logic<3>,
 
-  button: input  logic<5>,
+  button: input  logic<6>,
   led   : output logic<8>,
 ) {
 

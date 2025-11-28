@@ -4,6 +4,7 @@ pub package color_types {
     filled    : logic,
     same_value: logic,
     adjacent  : logic,
+    invalid   : logic,
   }
 }
 module colors (
@@ -164,11 +165,29 @@ module colors (
     24'h0B4693
   };
 
+  let invalid: logic<16, 24> = {
+    24'hFF4C5A,
+    24'hE94551,
+    24'hD33D49,
+    24'hBE3641,
+    24'hA92F39,
+    24'h942831,
+    24'h802229,
+    24'h6D1B21,
+    24'h5A151A,
+    24'h480F13,
+    24'h36090C,
+    24'h260506,
+    24'h160203,
+    24'h080101,
+    24'h010000,
+    24'h000000
+  };
+
   always_comb {
-    // color_output = baseline_palette[number_value];
-    let value: logic<4> = if is_empty ? 'd15 : number_value;
-    // let value       : logic<4> = number_value;
+    let value       : logic<4> = if is_empty ? 'd15 : number_value;
     color_output = switch {
+      cell_state.invalid   : invalid[value],
       cell_state.selected  : if cell_state.filled ? selected_filled[value] : selected[value],
       cell_state.same_value: if cell_state.filled ? same_value_filled[value] : same_value[value],
       cell_state.adjacent  : if cell_state.filled ? adjacent_filled[value] : adjacent[value],

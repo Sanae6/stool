@@ -18,7 +18,7 @@ module numbers (
   `undef SYNTHESIS
 //synthesis translate_on
   logic [13:0] address;
-  always_comb address = {12'(y * 'd48 + x), 2'd0};
+  always_comb address = {12'(y * 'd48 + x) % (48 * 48), 2'd0};
   logic [0:8][31:0] out;
   always_comb value = number == 0 ? 8 : out[number - 1][3:0];
   // always_comb value = 0;
