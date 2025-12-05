@@ -6,30 +6,23 @@ version = "B"
 cst = "src/hdmi.cst"
 sdc = "src/hdmi.sdc"
 verilog = [
-"src/design.sv",
+# top and video setup
+"target/src/top.sv",
 "src/dvi-tx/dvi_tx_clk_drv.v",
 "src/dvi-tx/dvi_tx_tmds_enc.v",
 "src/dvi-tx/dvi_tx_tmds_phy.v",
 "src/dvi-tx/dvi_tx_top.v",
-# "src/gowin_pll_old/gowin_pll.v",
 "src/gowin_pll/gowin_pll.v",
 "src/gowin_pll/gowin_pll_mod.v",
-"src/pll_init.v",
-# "src/top.v",
-# "src/video-misc/test_pattern_gen.v",
-"target/src/top.sv",
-# "target/src/me.sv",
-# "src/arduino/ai_sync.v",
-# "target/src/arduino/arduino.sv",
-# "target/src/arduino/receiver.sv",
+"src/gowin_pll/pll_init.v",
 "src/video-misc/video_timing_ctrl.v",
 
-"src/actual/picorv32.sv",
+# actual project 
 "target/src/actual/actual_top.sv",
 "target/src/actual/generator_top.sv",
+"src/actual/picorv32.sv",
 "target/src/actual/board_state.sv",
 "target/src/actual/colors.sv",
-"target/src/actual/remote.sv",
 "target/src/actual/types.sv",
 "src/actual/code_memory.sv",
 "src/actual/tiles.sv",

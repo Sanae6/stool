@@ -7,7 +7,4 @@ impl/
 dependencies/
 target/
 rv/output.*
-
-# Added by cargo
-
-/target
+/*.f
