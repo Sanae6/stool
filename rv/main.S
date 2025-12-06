@@ -129,20 +129,14 @@ shuffle_bands: start_frame 4 # layout
   beqz s0, 2f
 
   addi a0, s0, 1
-  li tp, 3
-  ebreak
   jal random_uint
 
   lw t0, 0(sp)
   li a2, 27
-  li tp, 3
-  ebreak
   mul a3, a0, a2
   mul a4, s0, a2
   add a0, t0, a4 # t0 + i
   add a1, t0, a3 # t0 + j
-  li tp, 3
-  ebreak
 
   jal memswp
 
